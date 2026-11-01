@@ -1,0 +1,51 @@
+{
+ "machines": [
+  {
+   "createdAt": 1793524400003,
+   "kind": "Coverstitch",
+   "name": "Janome CoverPro 1000CPX",
+   "updatedAt": 1793524400003,
+   "id": "janome-coverpro-1000cpx"
+  },
+  {
+   "createdAt": 1793524400002,
+   "kind": "Overlocker",
+   "name": "Baby Lock Enspire",
+   "updatedAt": 1793524400002,
+   "id": "babylock-enspire"
+  },
+  {
+   "createdAt": 1793524400000,
+   "kind": "Sewing machine",
+   "name": "Juki HZL-DX7",
+   "updatedAt": 1793524400000,
+   "id": "juki-hzl-dx7"
+  },
+  {
+   "createdAt": 1793524400001,
+   "kind": "Embroidery",
+   "name": "Brother NV880E",
+   "updatedAt": 1793524400001,
+   "id": "brother-nv880e"
+  }
+ ],
+ "makes": [
+  {
+   "costs": [],
+   "createdAt": 1793529037821,
+   "garment": "Top / tee",
+   "notions": [],
+   "photos": [
+    {
+     "id": "img/79d07ee1984e.jpg"
+    }
+   ],
+   "rating": 0,
+   "settings": [],
+   "status": "Cutting",
+   "title": "Altering Anthropologie Maeve Halter Scarf Bubble Hem in red stripe",
+   "updatedAt": 1793529133307,
+   "id": "mvxovqilpsnemr"
+  }
+ ]
+}

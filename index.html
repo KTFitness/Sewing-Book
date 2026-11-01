@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sewing Book</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sewing Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2c5a4d">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: phone-first app; sticky header with a tape-measure edge, cutting-mat grid ground, fixed bottom tab bar */
+:root{
+  --bg:#e9eee9; --grid:rgba(47,93,80,.07); --surface:#fbfcfa; --sunk:#f1f4f0;
+  --ink:#1b2420; --muted:#5a6a63; --line:#d2dad4;
+  --mat:#2c5a4d; --mat-ink:#ffffff; --mat-soft:#d9e8e1;
+  --tape:#e3b236; --tape-ink:#2a2208; --danger:#b23a2e;
+  --st-idea:#7a8781; --st-plan:#3f6f9c; --st-sew:#b9861a; --st-done:#2c7a5c; --st-off:#9a6a6a;
+  --display:"Young Serif",Georgia,"Times New Roman",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121816; --grid:rgba(120,180,160,.05); --surface:#1b2320; --sunk:#161d1a;
+  --ink:#e6ece9; --muted:#97a7a0; --line:#2d3a35;
+  --mat:#6db49b; --mat-ink:#0d1a15; --mat-soft:#21352d;
+  --tape:#e3b236; --tape-ink:#2a2208; --danger:#e07467;
+  --st-idea:#8d9a94; --st-plan:#7fa9d4; --st-sew:#e0b44e; --st-done:#6dc29d; --st-off:#c99494;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121816; --grid:rgba(120,180,160,.05); --surface:#1b2320; --sunk:#161d1a;
+  --ink:#e6ece9; --muted:#97a7a0; --line:#2d3a35;
+  --mat:#6db49b; --mat-ink:#0d1a15; --mat-soft:#21352d;
+  --tape:#e3b236; --tape-ink:#2a2208; --danger:#e07467;
+  --st-idea:#8d9a94; --st-plan:#7fa9d4; --st-sew:#e0b44e; --st-done:#6dc29d; --st-off:#c99494;
+  color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font:15px/1.5 var(--body);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--mat)}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--mat)}
+:focus-visible{outline:2px solid var(--tape);outline-offset:2px}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--mat);color:var(--mat-ink);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 18px}
+header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;background:var(--tape);
+  background-image:repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 5px),repeating-linear-gradient(90deg,var(--tape-ink) 0 1.5px,transparent 1.5px 25px);
+  background-size:100% 4px,100% 8px;background-repeat:no-repeat;background-position:0 0,0 0}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:900px;margin:0 auto}
+.brand{font-family:var(--display);font-size:22px;letter-spacing:.2px;line-height:1.1}
+.brand small{display:block;font-family:var(--body);font-size:12px;opacity:.8;letter-spacing:.06em;text-transform:uppercase}
+.icon-btn{background:transparent;border:1px solid currentColor;border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600;color:inherit}
+
+main{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px calc(96px + env(safe-area-inset-bottom,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:26px} h2{font-size:20px} h3{font-size:17px}
+.eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.between{justify-content:space-between}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.banner{background:var(--tape);color:var(--tape-ink);border-radius:var(--r);padding:10px 14px;font-weight:500}
+
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.btn.primary{background:var(--mat);color:var(--mat-ink);border-color:var(--mat)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.small{padding:5px 11px;font-size:13px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tag{display:inline-block;font-size:12px;background:var(--mat-soft);color:var(--ink);border-radius:999px;padding:2px 9px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c,var(--st-idea))}
+
+.search{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px}
+
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;text-align:left;padding:0;display:flex;flex-direction:column;min-width:0}
+.card .ph{aspect-ratio:4/5;max-width:100%;background:var(--sunk);display:grid;place-items:center;color:var(--muted);font-family:var(--display);font-size:28px;overflow:hidden}
+.card .ph img,.card .ph video{width:100%;height:100%;object-fit:cover;display:block}
+.card .body{padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.card .t{font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.card .s{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.list{display:flex;flex-direction:column;gap:8px}
+.grid-cards.pat{grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px}
+.card .ph.tlph{aspect-ratio:3/4}
+.grid-cards.pat .card .t{font-size:13px}.grid-cards.pat .card .s{font-size:12px}
+.tlbig{width:260px;max-width:78%;margin-inline:auto;aspect-ratio:3/4;border-radius:10px;border:1px solid var(--line);background-color:var(--sunk)}
+.li{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px;cursor:pointer;text-align:left;width:100%}
+.li .th{width:56px;height:56px;flex:none;border-radius:8px;background:var(--sunk);overflow:hidden;display:grid;place-items:center;font-family:var(--display);color:var(--muted)}
+.li .th img{width:100%;height:100%;object-fit:cover}
+.li .tx{min-width:0;flex:1}
+.li .t{font-weight:600;overflow-wrap:anywhere}
+.li .s{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+
+.masonry{columns:2 150px;column-gap:10px}
+.masonry .card{break-inside:avoid;margin-bottom:10px;width:100%}
+.masonry .card .ph{aspect-ratio:auto;min-height:90px}
+.masonry .card .ph img{height:auto}
+
+/* settings readout: the machine dial card */
+.dial{border:1px solid var(--line);border-radius:var(--r);background:var(--sunk);padding:12px;display:flex;flex-direction:column;gap:8px}
+.dial .mh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.dial .mn{font-weight:700}
+.dial .use{font-size:13px;color:var(--muted)}
+.readout{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px}
+.readout div{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;min-width:0}
+.readout dt{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.readout dd{margin:0;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.kv{display:grid;grid-template-columns:minmax(90px,34%) 1fr;gap:6px 14px;margin:0}
+.kv dt{color:var(--muted);font-size:13px}
+.kv dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0}
+
+.empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-family:var(--display);font-weight:400;font-size:18px;margin-bottom:4px}
+
+/* bottom nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabs .in{display:grid;grid-template-columns:repeat(6,1fr);max-width:900px;margin:0 auto}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 9px;text-decoration:none;color:var(--muted);font-size:11px;font-weight:600}
+nav.tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs a[aria-current="page"]{color:var(--mat)}
+
+/* sheet */
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(10,15,13,.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet .pane{background:var(--bg);width:100%;max-width:720px;max-height:94vh;max-height:94dvh;overflow-y:auto;border-radius:16px 16px 0 0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(24px + env(safe-area-inset-bottom,0px))}
+.sheet .bar{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:14px 10px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.sheet .bar h2{font-size:19px;min-width:0;overflow-wrap:anywhere}
+@media (min-width:760px){.sheet{align-items:center}.sheet .pane{border-radius:16px;max-height:88vh}}
+
+form .f{display:flex;flex-direction:column;gap:4px;min-width:0}
+form label{font-size:13px;font-weight:600;color:var(--muted)}
+form input,form select,form textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 10px;min-width:0}
+form textarea{min-height:84px;resize:vertical}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.fh{font-family:var(--display);font-size:17px;padding-top:6px;border-top:1px dashed var(--line);margin-top:4px}
+.setrow{border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.thumbs .tb{position:relative;width:76px;height:76px;border-radius:8px;overflow:hidden;background:var(--sunk);border:1px solid var(--line)}
+.thumbs .tb img,.thumbs .tb video{width:100%;height:100%;object-fit:cover}
+.thumbs .tb button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:13px;line-height:22px;padding:0;cursor:pointer}
+.rating{display:flex;gap:4px}
+.rating button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-family:var(--mono)}
+.rating button[aria-pressed="true"]{background:var(--tape);color:var(--tape-ink);border-color:var(--tape)}
+.lookup{background:var(--mat-soft);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:10px}
+.gallery{display:flex;gap:8px;overflow-x:auto}
+.gallery img,.gallery video{max-height:52vh;max-width:100%;border-radius:10px;flex:none}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-weight:600;font-size:14px;max-width:90vw}
+.check{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.check input{width:20px;height:20px;accent-color:var(--mat)}
+.check.done span{text-decoration:line-through;color:var(--muted)}
+.meas{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.bars{display:flex;flex-direction:column;gap:7px}
+.bar{display:grid;grid-template-columns:minmax(0,42%) 1fr 2.5em;gap:10px;align-items:center;font-size:13px}
+.bar span{overflow-wrap:anywhere}
+.bar .tr{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.bar .tr i{display:block;height:100%;background:var(--mat);border-radius:5px}
+.bar b{font-family:var(--mono);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.statgrid .n{font-family:var(--mono);font-size:22px;font-variant-numeric:tabular-nums}
+.minirow{display:grid;grid-template-columns:1fr 7em auto;gap:8px;align-items:end}
+.costtable{display:grid;grid-template-columns:1fr auto;gap:4px 14px;font-size:14px}
+.costtable .amt{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.costtable .tot{border-top:1px solid var(--line);padding-top:4px;font-weight:700}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:7px 16px;font-weight:600;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--mat);color:var(--mat-ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <div class="brand"><small>Kirsty's</small>Sewing Book</div>
+    <button class="icon-btn" data-act="quickadd" id="qa">+ Add</button>
+  </div>
+</header>
+
+<main id="view" aria-live="polite"></main>
+
+<nav class="tabs" aria-label="Sections"><div class="in">
+  <a href="#home" data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>Home</a>
+  <a href="#makes" data-tab="makes"><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8 16L19 4M16 16L5 4"/></svg>Makes</a>
+  <a href="#inspo" data-tab="inspo"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-6-6-9 9"/></svg>Inspo</a>
+  <a href="#patterns" data-tab="patterns"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12l3 3 4-6" stroke-dasharray="2 2"/></svg>Patterns</a>
+  <a href="#stash" data-tab="stash"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4z"/><path d="M3 12l9 4 9-4M3 16l9 4 9-4"/></svg>Stash</a>
+  <a href="#more" data-tab="more"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>More</a>
+</div></nav>
+
+<div class="sheet" id="sheet" hidden><div class="pane" id="pane"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const GARMENTS=["Top / tee","Shirt / blouse","Dress","Skirt","Pants / trousers","Shorts","Jeans","Jumpsuit","Jacket / coat","Cardigan / knitwear","Sweatshirt / hoodie","Activewear","Swimwear","Lingerie","Sleepwear","Bag / accessory","Other"];
+const FABRICS=["Single jersey","Interlock","Rib knit","Ponte","French terry","Sweatshirt fleece","Scuba","Double knit","Swim lycra","Activewear knit","Mesh / powernet","Sweater knit",
+ "Cotton lawn","Cotton poplin","Voile","Chambray","Shirting","Denim","Stretch denim","Linen","Linen blend","Viscose / rayon challis","Crepe","Silk","Satin","Chiffon / georgette","Twill","Gabardine","Wool suiting","Wool coating","Corduroy","Canvas","Tencel / lyocell","Broderie anglaise","Lace","Faux leather"];
+const STATUSES=["Idea","Planned","Cutting","Sewing","Finished","Abandoned"];
+const STCOL={Idea:"--st-idea",Planned:"--st-plan",Cutting:"--st-sew",Sewing:"--st-sew",Finished:"--st-done",Abandoned:"--st-off"};
+const KINDS=["Inspiration","Tip","Technique","Pattern idea","Make idea"];
+const MKINDS=["Sewing machine","Overlocker","Coverstitch","Embroidery","Other"];
+const NOTION_CATS=["Zip","Elastic","Interfacing","Buttons","Snaps / hardware","Thread","Bias binding","Tape / stay tape","Trim / lace","Needles","Other"];
+const MEAS=["Height","High bust","Full bust","Under bust","Waist","High hip","Full hip","Nape to waist","Shoulder width","Across back","Arm length","Bicep","Wrist","Inseam","Outseam","Crotch depth (rise)","Thigh","Knee","Calf","Neck"];
+
+const SCHEMA={
+ makes:[
+  {k:"title",l:"What are you making?",t:"text",req:1},
+  {k:"status",l:"Status",t:"select",o:STATUSES},
+  {k:"garment",l:"Garment type",t:"datalist",o:GARMENTS},
+  {k:"patternId",l:"Pattern",t:"patpick"},
+  {k:"size",l:"Size cut",t:"text",ph:"e.g. 12, graded to 14 at hip"},
+  {h:"Fabric"},
+  {k:"fabricId",l:"From my stash",t:"ref",ref:"fabrics"},
+  {k:"fabricType",l:"Fabric type",t:"datalist",o:FABRICS},
+  {k:"fibre",l:"Fibre content",t:"text",ph:"e.g. 95% cotton 5% elastane"},
+  {k:"weight",l:"Weight",t:"text",ph:"e.g. 220 gsm, midweight"},
+  {k:"stretch",l:"Stretch",t:"text",ph:"e.g. 50% 4-way"},
+  {k:"prewash",l:"Pre-wash",t:"text",ph:"e.g. 30° wash, line dry"},
+  {k:"_lookup",t:"lookup"},
+  {h:"Machine settings"},
+  {k:"settings",t:"settings"},
+  {h:"Notions used"},
+  {k:"notions",t:"notions"},
+  {h:"Notes"},
+  {k:"construction",l:"Construction notes",t:"textarea",ph:"Order of construction, what worked, finishes used"},
+  {k:"fit",l:"Fit & alterations",t:"textarea",ph:"FBA, swayback, length changes…"},
+  {k:"nextTime",l:"Next time I would…",t:"textarea"},
+  {k:"rating",l:"How happy are you with it?",t:"rating"},
+  {k:"again",l:"Make it again?",t:"select",o:["","Yes","Maybe","No"]},
+  {k:"started",l:"Started",t:"date"},{k:"finished",l:"Finished",t:"date"},
+  {h:"Cost"},
+  {k:"costs",t:"costs"},
+  {k:"photos",l:"Photos",t:"photos"},
+  {k:"tags",l:"Tags",t:"text",ph:"comma separated"}],
+ inspo:[
+  {k:"kind",l:"Type",t:"select",o:KINDS},
+  {k:"title",l:"Title",t:"text",req:1,ph:"e.g. Clean V-neck binding"},
+  {k:"photos",l:"Photos, screenshots or video",t:"photos",video:1},
+  {k:"link",l:"Link (Instagram, YouTube, TikTok, blog)",t:"url"},
+  {k:"garment",l:"Garment type",t:"datalist",o:GARMENTS},
+  {k:"fabricType",l:"Fabric type",t:"datalist",o:FABRICS},
+  {k:"patternId",l:"Related pattern",t:"patpick"},
+  {k:"notes",l:"Notes",t:"textarea"},
+  {k:"tags",l:"Tags",t:"text",ph:"comma separated"}],
+ patterns:[
+  {k:"_auto",t:"autofill"},
+  {k:"name",l:"Pattern name",t:"text",req:1},
+  {k:"designer",l:"Designer / company",t:"text"},
+  {k:"garment",l:"Garment type",t:"datalist",o:GARMENTS},
+  {k:"status",l:"Status",t:"select",o:["Owned","Wishlist","Self-drafted","Traced / adapted"]},
+  {k:"format",l:"Format",t:"select",o:["","PDF","Paper","Book","Magazine","Projector file"]},
+  {k:"cost",l:"What I paid",t:"text",ph:"e.g. $22"},
+  {k:"sizeRange",l:"Size range",t:"text"},
+  {k:"mySize",l:"My size in this pattern",t:"text"},
+  {k:"suggested",l:"Suggested fabrics",t:"text",ph:"comma separated, e.g. Ponte, Double knit"},
+  {k:"yardage",l:"Fabric needed (my size)",t:"text",ph:"e.g. 2.1 m of 150 cm"},
+  {k:"threadloop",l:"Threadloop link",t:"url"},
+  {k:"link",l:"Designer / shop link",t:"url"},
+  {k:"where",l:"Where the file or envelope lives",t:"text",ph:"e.g. Dropbox/Patterns, drawer 2"},
+  {k:"adjustments",l:"My standard adjustments",t:"textarea"},
+  {k:"notes",l:"Notes",t:"textarea"},
+  {k:"photos",l:"Cover / line drawing",t:"photos"},
+  {k:"tags",l:"Tags",t:"text",ph:"comma separated"}],
+ fabrics:[
+  {k:"_auto",t:"autofill"},
+  {k:"name",l:"Name / description",t:"text",req:1,ph:"e.g. Navy spot viscose"},
+  {k:"fabricType",l:"Fabric type",t:"datalist",o:FABRICS},
+  {k:"fibre",l:"Fibre content",t:"text"},
+  {k:"colour",l:"Colour / print",t:"text"},
+  {k:"length",l:"Length",t:"text",ph:"e.g. 2.5 m"},
+  {k:"width",l:"Width",t:"text",ph:"e.g. 145 cm"},
+  {k:"weight",l:"Weight",t:"text"},
+  {k:"stretch",l:"Stretch",t:"text"},
+  {k:"prewashed",l:"Pre-washed?",t:"select",o:["","Yes","No"]},
+  {k:"location",l:"Where it's stored",t:"text"},
+  {k:"bought",l:"Bought from / when",t:"text"},
+  {k:"cost",l:"What I paid (total)",t:"text",ph:"e.g. $36"},
+  {k:"earmarked",l:"Earmarked for",t:"text"},
+  {k:"archived",l:"Used up?",t:"select",o:["No","Yes"]},
+  {k:"photos",l:"Photo",t:"photos"},
+  {k:"notes",l:"Notes",t:"textarea"}],
+ notions:[
+  {k:"name",l:"What is it?",t:"text",req:1,ph:"e.g. 20 cm invisible zip, navy"},
+  {k:"category",l:"Kind",t:"select",o:NOTION_CATS},
+  {k:"size",l:"Size / spec",t:"text",ph:"e.g. 25 mm, 80/12, fusible knit"},
+  {k:"colour",l:"Colour",t:"text"},
+  {k:"quantity",l:"How many / how much",t:"text",ph:"e.g. 3, 4.5 m"},
+  {k:"location",l:"Where it's stored",t:"text"},
+  {k:"cost",l:"Cost each (or per metre)",t:"text",ph:"e.g. $3.50"},
+  {k:"photos",l:"Photo",t:"photos"},
+  {k:"notes",l:"Notes",t:"textarea"}],
+ machines:[
+  {k:"name",l:"Machine",t:"text",req:1},
+  {k:"kind",l:"Kind",t:"select",o:MKINDS},
+  {k:"needleSystem",l:"Needle system / defaults",t:"text"},
+  {k:"feet",l:"Feet & attachments I own",t:"textarea"},
+  {k:"lastService",l:"Last serviced",t:"date"},
+  {k:"notes",l:"Notes",t:"textarea"},
+  {k:"photos",l:"Photo",t:"photos"}]
+};
+const SINGULAR={makes:"make",inspo:"inspo",patterns:"pattern",fabrics:"fabric",machines:"machine",notions:"notion"};
+const AUTOKEYS={patterns:["name","designer","garment","format","sizeRange","suggested","yardage","link"],fabrics:["name","fabricType","fibre","colour","width","weight","stretch","bought"]};
+const money=v=>{const n=parseFloat(String(v??"").replace(/[^0-9.\-]/g,""));return isFinite(n)?n:0};
+const aud=n=>"$"+n.toFixed(2).replace(/\.00$/,"");
+const slugify=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/&/g,"and").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const tlUrl=slug=>"https://threadloop.app/patterns/"+slug;
+const patLabel=p=>(p.name||p.n)+" · "+(p.designer||p.d||"");
+function tlFree(){const adopted=new Set(S.patterns.map(p=>p.tlSlug).filter(Boolean));return S.tl.filter(x=>!adopted.has(x.s))}
+function tlAsPattern(x){return {id:"tl:"+x.s,tl:1,s:x.s,thumb:tlThumb(x),tltags:x.tagText||"",fab:x.tg?x.tg.f:[],name:x.n,designer:x.d,garment:x.t.split("|")[0]||"",status:x.w?"Wishlist":"Owned",free:/Free/.test(x.f),unavail:/Unavailable/.test(x.f),types:x.t}}
+function tlThumb(x){const m=S.tlMeta;if(!m||!m.sheets||!(x.i>=0))return"";const c=m.cell;const sh=Math.floor(x.i/c.per),k=x.i%c.per;const id=m.sheets[sh];if(!id)return"";
+  const inSheet=Math.min(c.per,m.count-sh*c.per);const rows=Math.ceil(inSheet/c.cols);const col=k%c.cols,row=Math.floor(k/c.cols);
+  return `background-image:url(${blob(id)});background-size:${c.cols*100}% ${rows*100}%;background-position:${c.cols>1?col/(c.cols-1)*100:0}% ${rows>1?row/(rows-1)*100:0}%;background-repeat:no-repeat`}
+function allPatterns(){return [...S.patterns,...tlFree().map(tlAsPattern)]}
+function setTL(docs){const items=[];let meta=null,vals=null;const tagDocs=[];let o=0;
+  [...docs].sort((a,b)=>a.id.localeCompare(b.id)).forEach(d=>{if(d.id==="meta")meta=d;else if(d.id==="tagvals")vals=d;else if(d.id.startsWith("tags-"))tagDocs.push(d);else(d.items||[]).forEach(r=>items.push({o:o++,s:r[0]||(slugify(r[1])+"-by-"+slugify(r[2])),n:r[1],d:r[2],t:r[3]||"",f:r[4]||"",w:!!r[5],i:typeof r[6]==="number"?r[6]:-1}))});
+  if(vals){const rows=[];tagDocs.forEach(d=>(d.rows||[]).forEach((r,k)=>rows[d.start+k]=r));
+    items.forEach(x=>{const r=rows[x.o];if(!r)return;const [t,dd,f]=r.split("|").map(z=>z?z.split(".").map(Number):[]);
+      x.tg={t:t.map(k=>vals.t[k]).filter(Boolean),d:dd.map(k=>vals.d[k]).filter(Boolean),f:f.map(k=>vals.f[k]).filter(Boolean)};
+      x.tagText=[...x.tg.t,...x.tg.d.map(z=>z[0]),...x.tg.f].join(" ")})}
+  S.tlTagged=!!vals;items.sort((a,b)=>a.d.localeCompare(b.d,undefined,{sensitivity:"base"})||a.n.localeCompare(b.n,undefined,{numeric:true,sensitivity:"base"}));S.tl=items;S.tlMeta=meta;refreshPatDL()}
+function refreshPatDL(){let dl=document.getElementById("dl-pat");if(!dl){dl=document.createElement("datalist");dl.id="dl-pat";document.body.appendChild(dl)}dl.innerHTML=allPatterns().map(p=>`<option value="${esc(patLabel(p))}">`).join("")}
+async function adoptTL(slug){const existing=S.patterns.find(p=>p.tlSlug===slug);if(existing)return existing.id;const x=S.tl.find(t=>t.s===slug);if(!x)return null;const id="tl-"+slug.slice(0,180);
+  const o={name:x.n,designer:x.d,garment:x.t.split("|")[0]||"",status:x.w?"Wishlist":"Owned",threadloop:tlUrl(slug),tlSlug:slug,createdAt:Date.now(),updatedAt:Date.now()};if(/Free/.test(x.f))o.tags="Free";
+  await S.db.collection("patterns").doc(id).set(o);S.patterns=[...S.patterns,{id,...o}];return id}
+async function resolvePat(label){label=String(label||"").trim();if(!label)return"";const own=S.patterns.find(p=>patLabel(p)===label||p.name===label);if(own)return own.id;const t=S.tl.find(x=>patLabel({n:x.n,d:x.d})===label);if(t)return await adoptTL(t.s);return null}
+const costTotal=m=>(m.costs||[]).reduce((t,c)=>t+money(c.amount),0)||money(m.cost);
+const SET_FIELDS=[["usedFor","Used for","e.g. Side seams, hems"],["needle","Needle","e.g. Jersey 80/12"],["thread","Thread",""],["stitch","Stitch",""],["length","Length",""],["width","Width",""],["tension","Tension",""],["diff","Diff. feed",""],["foot","Foot",""],["notes","Notes",""]];
+
+const S={makes:[],inspo:[],patterns:[],fabrics:[],machines:[],notions:[],tl:[],tlMeta:null,show:{},settings:{},ready:false,db:null,assets:null,downloads:null,filters:{}};
+const $=(s,el=document)=>el.querySelector(s);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm=v=>String(v||"").trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const LOCALURL=new Map();
+const blob=id=>/[\/.]/.test(id)?id:(LOCALURL.get(id)||"");
+const byId=(col,id)=>S[col].find(x=>x.id===id);
+const ph=s=>esc((s||"?").trim().charAt(0).toUpperCase());
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2600)}
+function media(p,cls=""){if(!p)return"";return p.v?`<video src="${blob(p.id)}" muted playsinline preload="metadata" class="${cls}"></video>`:`<img src="${blob(p.id)}" alt="" loading="lazy" class="${cls}">`}
+function firstPhoto(x){return (x.photos||[])[0]}
+function tagsOf(x){return String(x.tags||"").split(",").map(s=>s.trim()).filter(Boolean)}
+function title(col,x){return x.title||x.name||"Untitled"}
+
+/* ---------- cross reference ---------- */
+function pastFor(fabricType,garment,excludeId){
+  const f=norm(fabricType),g=norm(garment);if(!f&&!g)return[];
+  return S.makes.filter(m=>m.id!==excludeId).map(m=>{let s=0;
+    if(f&&norm(m.fabricType)===f)s+=3;else if(f&&norm(m.fabricType)&&(norm(m.fabricType).includes(f)||f.includes(norm(m.fabricType))))s+=2;
+    if(g&&norm(m.garment)===g)s+=2; if(s&&(m.settings||[]).length)s+=1; if(m.status==="Finished")s+=.5;
+    return {m,s}}).filter(x=>x.s>=2).sort((a,b)=>b.s-a.s||(b.m.updatedAt||0)-(a.m.updatedAt||0)).map(x=>x.m);
+}
+function dial(st){
+  const mach=st.machineId?byId("machines",st.machineId):null;
+  const cells=SET_FIELDS.filter(([k])=>k!=="usedFor"&&k!=="notes"&&st[k]).map(([k,l])=>`<div><dt>${l}</dt><dd>${esc(st[k])}</dd></div>`).join("");
+  return `<div class="dial"><div class="mh"><span class="mn">${esc(mach?mach.name:(st.machineName||"Machine"))}</span>${st.usedFor?`<span class="use">${esc(st.usedFor)}</span>`:""}</div>
+  ${cells?`<dl class="readout" style="margin:0">${cells}</dl>`:""}${st.notes?`<div class="muted" style="font-size:13px">${esc(st.notes)}</div>`:""}</div>`;
+}
+function pastBlock(list,opts={}){
+  if(!list.length)return `<div class="muted">${opts.emptyMsg||"Nothing logged yet that matches."}</div>`;
+  return list.slice(0,opts.max||5).map(m=>{const p=m.patternId&&byId("patterns",m.patternId);
+    return `<div class="stack" style="gap:8px"><div class="row between"><div><b>${esc(m.title)}</b><div class="muted" style="font-size:13px">${esc([m.fabricType,m.fibre,m.weight,p&&p.name].filter(Boolean).join(" · "))}</div></div>
+    <div class="row">${opts.copy?`<button type="button" class="btn small" data-act="copyset" data-id="${m.id}">Copy settings</button>`:`<button type="button" class="btn small" data-act="open" data-col="makes" data-id="${m.id}">Open</button>`}</div></div>
+    ${(m.settings||[]).map(dial).join("")||`<div class="muted" style="font-size:13px">No machine settings recorded.</div>`}
+    ${m.nextTime?`<div style="font-size:13px"><span class="eyebrow">Next time</span><br>${esc(m.nextTime)}</div>`:""}</div>`}).join(`<hr style="border:0;border-top:1px dashed var(--line);width:100%">`);
+}
+
+/* ---------- views ---------- */
+const VIEWS={home,makes:()=>listView("makes"),inspo:()=>listView("inspo"),patterns:()=>listView("patterns"),stash,more};
+function stash(){const seg=S.filters.seg||"fabrics";return `<div class="stack"><div class="seg" role="group" aria-label="Stash section">${[["fabrics","Fabric"],["notions","Notions"]].map(([k,l])=>`<button data-act="seg" data-v="${k}" aria-pressed="${seg===k}">${l}</button>`).join("")}</div>${listView(seg)}</div>`}
+function route(){const v=(location.hash||"#home").slice(1);const name=VIEWS[v]?v:"home";
+  document.querySelectorAll("nav.tabs a").forEach(a=>{if(a.dataset.tab===name)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  S.view=name;render()}
+function render(){const el=$("#view");if(!S.ready&&S.db!==null){el.innerHTML=statusBanner()+`<div class="empty"><b>Opening your sewing book…</b>Loading your makes, patterns and stash.</div>`;return}
+  el.innerHTML=statusBanner()+VIEWS[S.view]()}
+function statusBanner(){
+  if(S.db===null)return `<div class="banner" style="margin-bottom:14px">This browser isn't letting the Sewing Book save anything. Open it from your home screen, and make sure Private Browsing is off.</div>`;
+  if(S.slow)return `<div class="banner" style="margin-bottom:14px">Can't reach your saved data yet. Check your connection; it will load by itself.</div>`;
+  if(S.readOnly)return `<div class="banner" style="margin-bottom:14px">This copy is read-only for you.</div>`;return""}
+
+function home(){
+  const g=S.filters.lkG||"",f=S.filters.lkF||"";
+  const res=pastFor(f,g);
+  const active=S.makes.filter(m=>["Planned","Cutting","Sewing"].includes(m.status)).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  const recent=[...S.inspo].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,6);
+  const fin=S.makes.filter(m=>m.status==="Finished").length;
+  return `<div class="stack" style="gap:20px">
+  <section class="panel stack">
+    <div><div class="eyebrow">Before you thread up</div><h1>What did I use last time?</h1></div>
+    <p class="muted" style="margin:0">Pick the fabric (and garment, if you like). Your past makes with matching fabric show their needles and machine settings.</p>
+    <form class="fgrid" onsubmit="return false">
+      <div class="f"><label for="lkF">Fabric type</label><input id="lkF" list="dl-fab" value="${esc(f)}" placeholder="e.g. Ponte"></div>
+      <div class="f"><label for="lkG">Garment</label><input id="lkG" list="dl-gar" value="${esc(g)}" placeholder="Any"></div>
+    </form>
+    <div id="lkRes" class="stack">${f||g?pastBlock(res,{max:6,emptyMsg:`No makes logged yet with ${esc(f||g)}. Once you log one, its settings will show here.`}):""}</div>
+  </section>
+  <section class="stack"><div class="row between"><h2>On the table</h2><a href="#makes" class="btn small">All makes</a></div>
+    ${active.length?`<div class="list">${active.map(m=>li("makes",m)).join("")}</div>`:`<div class="empty"><b>Nothing in progress</b>Start a make and it will sit here until it's finished.<div style="margin-top:10px"><button class="btn primary" data-act="new" data-col="makes">Start a make</button></div></div>`}
+  </section>
+  <section class="stack"><div class="row between"><h2>Latest inspo</h2><a href="#inspo" class="btn small">Inspo board</a></div>
+    ${recent.length?`<div class="grid-cards">${recent.map(x=>card("inspo",x)).join("")}</div>`:`<div class="empty"><b>Your inspo board is empty</b>Save screenshots, photos, video tips and links.<div style="margin-top:10px"><button class="btn primary" data-act="new" data-col="inspo">Add inspo</button></div></div>`}
+  </section>
+  <section class="panel"><div class="row" style="gap:22px">
+    ${[["Makes finished",fin],["Patterns",allPatterns().filter(p=>p.status!=="Wishlist").length],["Wishlist",allPatterns().filter(p=>p.status==="Wishlist").length],["Fabrics in stash",S.fabrics.filter(x=>x.archived!=="Yes").length]].map(([l,n])=>`<div><div style="font-family:var(--mono);font-size:22px">${n}</div><div class="eyebrow">${l}</div></div>`).join("")}
+  </div></section></div>`;
+}
+function li(col,x){const p=firstPhoto(x);let sub="";
+  if(col==="makes"){const pt=x.patternId&&byId("patterns",x.patternId);sub=[pt&&pt.name,x.fabricType].filter(Boolean).join(" · ")}
+  if(col==="patterns")sub=[x.designer,x.tl?x.types.replace(/\|/g,", "):x.garment,x.status==="Wishlist"?"Wishlist":"",x.free?"Free":"",x.format].filter(Boolean).join(" · ");
+  if(x.tl)return `<button class="li" data-act="opentl" data-id="${esc(x.s)}"><span class="th" style="font-size:11px;font-family:var(--body);font-weight:700;color:var(--mat)">TL</span><span class="tx"><div class="t">${esc(x.name)}</div><div class="s">${esc(sub)}</div></span></button>`;
+  if(col==="fabrics")sub=[x.fabricType,x.length,x.colour].filter(Boolean).join(" · ");
+  if(col==="machines")sub=x.kind||"";
+  if(col==="notions")sub=[x.category,x.size,x.colour,x.quantity&&("qty "+x.quantity)].filter(Boolean).join(" · ");
+  return `<button class="li" data-act="open" data-col="${col}" data-id="${x.id}"><span class="th">${p&&!p.v?media(p):ph(title(col,x))}</span>
+  <span class="tx"><div class="t">${esc(title(col,x))}</div><div class="s">${esc(sub)}</div></span>${col==="makes"?`<span class="pill" style="--c:var(${STCOL[x.status]||"--st-idea"})">${esc(x.status||"Idea")}</span>`:""}</button>`}
+function card(col,x){const p=firstPhoto(x);let sub="";
+  if(x.tl)return `<button class="card" data-act="opentl" data-id="${esc(x.s)}"><div class="ph tlph" style="${x.thumb}">${x.thumb?"":ph(x.name)}</div><div class="body"><div class="t">${esc(x.name)}</div><div class="s">${esc([x.designer,x.status==="Wishlist"?"Wishlist":"",x.free?"Free":""].filter(Boolean).join(" · "))}</div></div></button>`;
+  if(col==="inspo")sub=[x.kind,x.garment,x.fabricType].filter(Boolean).join(" · ");
+  if(col==="makes")sub=[x.status,x.fabricType].filter(Boolean).join(" · ");
+  if(col==="patterns")sub=[x.designer,x.status==="Wishlist"?"Wishlist":""].filter(Boolean).join(" · ");
+  if(col==="patterns"&&!p&&x.tlSlug){const t=S.tl.find(z=>z.s===x.tlSlug);const st=t&&tlThumb(t);if(st)return `<button class="card" data-act="open" data-col="patterns" data-id="${x.id}"><div class="ph tlph" style="${st}"></div><div class="body"><div class="t">${esc(title(col,x))}</div><div class="s">${esc(sub)}</div></div></button>`}
+  if(col==="fabrics")sub=[x.fabricType,x.length].filter(Boolean).join(" · ");
+  return `<button class="card" data-act="open" data-col="${col}" data-id="${x.id}"><div class="ph">${p?media(p):(x.link?"↗":ph(title(col,x)))}</div>
+  <div class="body"><div class="t">${esc(title(col,x))}</div>${sub?`<div class="s">${esc(sub)}</div>`:""}</div></button>`}
+
+const LISTCONF={
+ makes:{h:"Makes",chips:["All",...STATUSES],chipKey:"status",layout:"list",empty:"Log each garment with its fabric, needles and settings so the next one is easier."},
+ inspo:{h:"Inspo board",chips:["All",...KINDS],chipKey:"kind",layout:"masonry",empty:"Screenshots, photos, video tips and links all live here. Tag them by garment and fabric so they turn up later."},
+ patterns:{h:"Patterns",chips:["All","Owned","Wishlist","Free","Made","Self-drafted","Traced / adapted"],chipKey:"status",layout:"grid",empty:"Add the patterns you own, or paste a list from Threadloop to bring them in at once."},
+ notions:{h:"Notions",chips:["All",...NOTION_CATS],chipKey:"category",layout:"list",empty:"Zips, elastic, interfacing, buttons, thread. Log them here and link them to makes."},
+ fabrics:{h:"Fabric stash",chips:["In stash","Used up","All"],chipKey:"archived",layout:"grid",empty:"Photograph and log each fabric: type, fibre, length and width. Makes can then pull its details in."}
+};
+function listView(col){const c=LISTCONF[col];const chip=S.filters[col+"Chip"]||c.chips[0];const q=norm(S.filters[col+"Q"]);
+  let items=col==="patterns"?[...S.patterns].sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0)).concat(tlFree().map(tlAsPattern)):[...S[col]].sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0));
+  if(col==="fabrics"){if(chip==="In stash")items=items.filter(x=>x.archived!=="Yes");else if(chip==="Used up")items=items.filter(x=>x.archived==="Yes")}
+  else if(col==="patterns"&&chip==="Free")items=items.filter(x=>x.free||/(^|,)\s*free\s*(,|$)/i.test(x.tags||""));
+  else if(col==="patterns"&&chip==="Made"){const made=new Set(S.makes.map(m=>m.patternId));items=items.filter(x=>made.has(x.id))}
+  else if(chip!=="All")items=items.filter(x=>(x[c.chipKey]||(col==="makes"?"Idea":""))===chip);
+  const gF=S.filters[col+"G"]||"";if(gF)items=items.filter(x=>norm(x.garment)===norm(gF));
+  const fF=col==="patterns"?S.filters.patFab||"":"";if(fF)items=items.filter(x=>{const tg=x.fab||((x.tlSlug&&(S.tl.find(z=>z.s===x.tlSlug)||{}).tg)||{}).f||[];return tg.includes(fF)||norm(x.suggested).includes(norm(fF))});
+  if(q){const words=q.split(/\s+/).filter(Boolean);items=items.filter(x=>{const tlx=x.tlSlug&&S.tl.find(z=>z.s===x.tlSlug);const hay=norm([x.name,x.title,x.designer,x.garment,x.types,x.fabricType,x.notes,x.tags,x.kind,x.category,x.colour,x.fibre,x.suggested,x.tltags,tlx&&tlx.tagText].join(" "));return words.every(w=>hay.includes(w))})}
+  const total=items.length;const lim=S.show[col]||60;items=items.slice(0,lim);
+  const more=total>lim?`<div style="text-align:center"><button class="btn" data-act="more" data-col="${col}">Show more (${total-lim} left)</button></div>`:"";
+  const empty=col==="patterns"?!S.patterns.length&&!S.tl.length:!S[col].length;
+  const body=empty?`<div class="empty"><b>Nothing here yet</b>${c.empty}</div>`:!items.length?`<div class="empty">No matches.</div>`:
+    c.layout==="list"?`<div class="list">${items.map(x=>li(col,x)).join("")}</div>`:
+    c.layout==="masonry"?`<div class="masonry">${items.map(x=>card(col,x)).join("")}</div>`:`<div class="grid-cards${col==="patterns"?" pat":""}">${items.map(x=>card(col,x)).join("")}</div>`;
+  const countLine=`<div class="muted" style="font-size:13px">${total} ${total===1?"item":"items"}${col==="patterns"&&S.tlMeta?` · Threadloop stash imported ${esc(S.tlMeta.importedOn||"")}`:""}</div>`;
+  const gars=col==="notions"||col==="patterns"?[]:[...new Set(S[col].map(x=>x.garment).filter(Boolean))].sort();
+  return `<div class="stack">
+  <div class="row between"><h1>${c.h}</h1><div class="row">${col==="patterns"?`<button class="btn small" data-act="tlsync">Threadloop</button><button class="btn small" data-act="bulk">Paste a list</button>`:""}<button class="btn primary small" data-act="new" data-col="${col}">+ New</button></div></div>
+  <input class="search" id="q-${col}" type="search" placeholder="Search ${c.h.toLowerCase()}" value="${esc(S.filters[col+"Q"]||"")}" data-q="${col}">
+  <div class="chips" role="group" aria-label="Filter">${c.chips.map(ch=>`<button class="chip" aria-pressed="${ch===chip}" data-act="chip" data-col="${col}" data-v="${esc(ch)}">${esc(ch)}</button>`).join("")}</div>
+  ${col==="patterns"&&S.tlTagged?`<div class="chips">${["","Woven","Knit","Stretch woven","Non-woven"].map(g=>`<button class="chip" aria-pressed="${g===(S.filters.patFab||"")}" data-act="fabchip" data-v="${esc(g)}">${esc(g||"Any fabric")}</button>`).join("")}</div>`:""}
+  ${gars.length>1&&col!=="fabrics"?`<div class="chips">${["",...gars].map(g=>`<button class="chip" aria-pressed="${g===gF}" data-act="gchip" data-col="${col}" data-v="${esc(g)}">${esc(g||"Any garment")}</button>`).join("")}</div>`:""}
+  ${countLine}${body}${more}</div>`}
+
+function more(){const meas=S.settings.measurements||{};const shop=(S.settings.shopping||{}).items||[];
+  return `<div class="stack" style="gap:22px">
+  ${statsHTML()}
+  <section class="stack"><div class="row between"><h2>Machines</h2><button class="btn primary small" data-act="new" data-col="machines">+ Machine</button></div>
+  ${S.machines.length?`<div class="list">${S.machines.map(m=>li("machines",m)).join("")}</div>`:`<div class="empty">No machines yet.</div>`}</section>
+  <section class="panel stack"><div class="row between"><h2>Shopping list</h2></div>
+    <form class="row" data-form="shop" style="flex-wrap:nowrap"><input id="shopIn" placeholder="e.g. Jersey needles 80/12, navy Gütermann" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--surface);min-width:0"><button class="btn primary small">Add</button></form>
+    <div>${shop.length?shop.map(i=>`<label class="check ${i.done?"done":""}"><input type="checkbox" data-act="shoptoggle" data-id="${i.id}" ${i.done?"checked":""}><span style="flex:1">${esc(i.text)}</span><button type="button" class="btn small" data-act="shopdel" data-id="${i.id}" aria-label="Remove">×</button></label>`).join(""):`<div class="muted">Notions, needles and thread you need to pick up.</div>`}</div>
+    ${shop.some(i=>i.done)?`<div><button class="btn small" data-act="shopclear">Clear ticked items</button></div>`:""}
+  </section>
+  <section class="panel stack"><div><h2>My measurements</h2><div class="muted" style="font-size:13px">${meas.updated?"Last updated "+esc(meas.updated):"Centimetres. Update when you re-measure."}</div></div>
+    <form class="meas" data-form="meas">${MEAS.map((m,i)=>`<div class="f"><label for="m${i}">${m}</label><input id="m${i}" name="${esc(m)}" inputmode="decimal" value="${esc((meas.values||{})[m]||"")}"></div>`).join("")}
+    <div style="grid-column:1/-1"><button class="btn primary">Save measurements</button></div></form>
+  </section>
+  <section class="panel stack"><h2>Backup</h2><p class="muted" style="margin:0">Everything you add lives on this phone. Save a backup now and then, photos included, to Files or iCloud Drive. Restoring adds the backup's entries back and replaces any with the same name.</p><div class="row"><button class="btn" data-act="export">Save backup</button><label class="btn" style="color:var(--ink)">Restore a backup<input type="file" accept=".json,application/json" hidden data-restore></label></div><div id="usage" class="muted" style="font-size:13px"></div></section>
+  </div>`}
+
+function bars(pairs,max=8){pairs=pairs.sort((a,b)=>b[1]-a[1]).slice(0,max);if(!pairs.length)return `<div class="muted" style="font-size:13px">Nothing logged yet.</div>`;const top=pairs[0][1]||1;
+  return `<div class="bars">${pairs.map(([l,n])=>`<div class="bar"><span>${esc(l)}</span><div class="tr"><i style="width:${Math.max(4,Math.round(n/top*100))}%"></i></div><b>${n}</b></div>`).join("")}</div>`}
+function tally(list,fn){const m={};list.forEach(x=>{const k=fn(x);if(k)m[k]=(m[k]||0)+1});return Object.entries(m)}
+function statsHTML(){const live=S.makes.filter(m=>m.status!=="Abandoned");const fin=S.makes.filter(m=>m.status==="Finished");
+  const spent=S.makes.reduce((t,m)=>t+costTotal(m),0);const costed=fin.filter(m=>costTotal(m)>0);
+  const owned=allPatterns().filter(p=>p.status!=="Wishlist");const made=new Set(S.makes.map(m=>m.patternId).filter(Boolean));
+  const unmade=owned.filter(p=>!made.has(p.id));
+  const patSpend=S.patterns.reduce((t,p)=>t+money(p.cost),0);
+  const desMakes=tally(live,m=>{const p=m.patternId&&byId("patterns",m.patternId);return p&&p.designer});
+  const years=tally(fin,m=>(m.finished||"").slice(0,4));
+  return `<section class="panel stack"><div><div class="eyebrow">Stats</div><h1>Your sewing in numbers</h1></div>
+  <div class="statgrid">
+   <div><div class="n">${fin.length}</div><div class="eyebrow">Finished makes</div></div>
+   <div><div class="n">${aud(spent)}</div><div class="eyebrow">Spent on makes</div></div>
+   <div><div class="n">${costed.length?aud(costed.reduce((t,m)=>t+costTotal(m),0)/costed.length):"–"}</div><div class="eyebrow">Average per make</div></div>
+   <div><div class="n">${owned.length?Math.round((owned.length-unmade.length)/owned.length*100)+"%":"–"}</div><div class="eyebrow">Patterns used</div></div>
+   <div><div class="n">${aud(patSpend)}</div><div class="eyebrow">Spent on patterns</div></div>
+  </div>
+  <div class="stack" style="gap:8px"><h3>Most-made garments</h3>${bars(tally(live,m=>m.garment))}</div>
+  <div class="stack" style="gap:8px"><h3>Designers you sew most</h3>${bars(desMakes)}</div>
+  <div class="stack" style="gap:8px"><h3>Fabrics you sew most</h3>${bars(tally(live,m=>m.fabricType))}</div>
+  <div class="stack" style="gap:8px"><h3>Patterns in your stash by designer</h3>${bars(tally(owned,p=>p.designer))}</div>
+  ${years.length>1?`<div class="stack" style="gap:8px"><h3>Finished by year</h3>${bars(years.sort((a,b)=>b[0].localeCompare(a[0])),10)}</div>`:""}
+  <div class="muted" style="font-size:14px">${unmade.length} of your ${owned.length} patterns haven't been made yet. The Patterns tab's "Made" filter shows the ones that have.</div>
+  </section>`}
+
+/* ---------- detail + forms ---------- */
+function openSheet(html){$("#pane").innerHTML=html;$("#sheet").hidden=false;$("#pane").scrollTop=0;document.body.style.overflow="hidden"}
+function closeSheet(){$("#sheet").hidden=true;$("#pane").innerHTML="";document.body.style.overflow="";S.form=null}
+
+function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
+  const rows=sch.filter(f=>f.k&&!["photos","settings","_lookup","_auto","notions","costs","title","name"].includes(f.k)&&x[f.k]).map(f=>{let v=x[f.k];
+    if(f.t==="ref"||f.t==="patpick"){const rc=f.ref||"patterns";const r=byId(rc,v);if(!r)return"";v=`<a href="#" data-act="open" data-col="${rc}" data-id="${r.id}">${esc(title(rc,r))}</a>`}
+    else if(f.t==="url")v=`<a href="${esc(v)}" target="_blank" rel="noopener">${esc(v.replace(/^https?:\/\/(www\.)?/,"").slice(0,48))}</a>`;
+    else if(f.t==="rating")v=`<span style="font-family:var(--mono)">${"●".repeat(v)}${"○".repeat(5-v)}</span>`;
+    else v=esc(v);
+    return `<dt>${esc(f.l)}</dt><dd>${v}</dd>`}).join("");
+  const photos=(x.photos||[]);
+  let extra="";
+  if(col==="patterns"&&x.tlSlug){const t=S.tl.find(z=>z.s===x.tlSlug);if(t&&t.tg){const g={};t.tg.d.forEach(([l,gr])=>(g[gr]=g[gr]||[]).push(l));extra+=`<div class="stack" style="gap:6px"><h3>From Threadloop</h3><dl class="kv">${t.tg.f.length?`<dt>Fabric</dt><dd>${esc(t.tg.f.join(", "))}</dd>`:""}${t.tg.t.length?`<dt>Pattern types</dt><dd>${esc(t.tg.t.join(", "))}</dd>`:""}${Object.entries(g).map(([gr,ls])=>`<dt>${esc(gr)}</dt><dd>${esc(ls.join(", "))}</dd>`).join("")}</dl></div>`}}
+  if(col==="patterns"&&!photos.length&&x.tlSlug){const t=S.tl.find(z=>z.s===x.tlSlug);const st=t&&tlThumb(t);if(st)extra+=`<div class="tlbig" style="${st}"></div>`}
+  if(col==="makes"){extra+=`<div class="stack"><h3>Machine settings</h3>${(x.settings||[]).map(dial).join("")||`<div class="muted">None recorded.</div>`}</div>`;
+    const nl=(x.notions||[]).map(r=>{const n=byId("notions",r.notionId);return n?`<button class="li" data-act="open" data-col="notions" data-id="${n.id}"><span class="tx"><div class="t">${esc(n.name)}</div><div class="s">${esc([n.category,r.qty&&("used "+r.qty)].filter(Boolean).join(" · "))}</div></span></button>`:""}).join("");
+    if(nl)extra+=`<div class="stack"><h3>Notions used</h3><div class="list">${nl}</div></div>`;
+    if((x.costs||[]).length||x.cost)extra+=`<div class="stack" style="gap:6px"><h3>Cost</h3><div class="costtable">${(x.costs||[]).map(c=>`<span>${esc(c.item||"Item")}</span><span class="amt">${aud(money(c.amount))}</span>`).join("")}${!(x.costs||[]).length&&x.cost?`<span>Total (noted)</span><span class="amt">${esc(x.cost)}</span>`:`<span class="tot">Total</span><span class="amt tot">${aud(costTotal(x))}</span>`}</div></div>`;
+    const others=pastFor(x.fabricType,"",x.id);if(others.length)extra+=`<div class="lookup"><div class="eyebrow">Other makes in ${esc(x.fabricType)}</div>${pastBlock(others,{max:3})}</div>`}
+  if(col==="patterns"){const ms=S.makes.filter(m=>m.patternId===x.id);const ins=S.inspo.filter(m=>m.patternId===x.id);
+    extra+=`<div class="stack"><h3>Made with this pattern</h3>${ms.length?`<div class="list">${ms.map(m=>li("makes",m)).join("")}</div>`:`<div class="muted">Not made yet.</div>`}</div>`;
+    if(ins.length)extra+=`<div class="stack"><h3>Linked inspo</h3><div class="grid-cards">${ins.map(m=>card("inspo",m)).join("")}</div></div>`;
+    const sug=String(x.suggested||"").split(",").map(norm).filter(Boolean);
+    if(sug.length){const fab=S.fabrics.filter(f=>f.archived!=="Yes"&&sug.includes(norm(f.fabricType)));extra+=`<div class="stack"><h3>Fabric in your stash that suits it</h3>${fab.length?`<div class="list">${fab.map(f=>li("fabrics",f)).join("")}</div>`:`<div class="muted">None of the suggested fabric types are in your stash.</div>`}</div>`}}
+  if(col==="fabrics"){const ft=norm(x.fabricType);
+    const pats=ft?S.patterns.filter(p=>String(p.suggested||"").split(",").map(norm).includes(ft)):[];
+    const ms=S.makes.filter(m=>m.fabricId===x.id);
+    extra+=`<div class="stack"><h3>Patterns that suit ${esc(x.fabricType||"this fabric")}</h3>${pats.length?`<div class="list">${pats.map(p=>li("patterns",p)).join("")}</div>`:`<div class="muted">Add suggested fabrics to your patterns and matches will show here.</div>`}</div>`;
+    if(ms.length)extra+=`<div class="stack"><h3>Used in</h3><div class="list">${ms.map(m=>li("makes",m)).join("")}</div></div>`;
+    const past=pastFor(x.fabricType,"");if(past.length)extra+=`<div class="lookup"><div class="eyebrow">Settings you've used on ${esc(x.fabricType)}</div>${pastBlock(past,{max:3})}</div>`}
+  if(col==="notions"){const used=S.makes.filter(m=>(m.notions||[]).some(r=>r.notionId===x.id));
+    extra+=`<div class="stack"><h3>Used in</h3>${used.length?`<div class="list">${used.map(m=>li("makes",m)).join("")}</div>`:`<div class="muted">Not linked to a make yet.</div>`}</div><div><button class="btn" data-act="toshop" data-id="${x.id}">Add to shopping list</button></div>`}
+  if(col==="machines"){const used=S.makes.filter(m=>(m.settings||[]).some(s=>s.machineId===x.id));
+    extra+=`<div class="stack"><h3>Makes using this machine</h3>${used.length?`<div class="list">${used.map(m=>li("makes",m)).join("")}</div>`:`<div class="muted">None logged yet.</div>`}</div>`}
+  if(col==="inspo"&&x.link)extra+=`<div><a class="btn" href="${esc(x.link)}" target="_blank" rel="noopener">Open original ↗</a></div>`;
+  openSheet(`<div class="bar"><h2>${esc(title(col,x))}</h2><button class="btn small" data-act="close">Close</button></div>
+  <div class="stack" style="gap:18px">
+  ${photos.length?`<div class="gallery">${photos.map(p=>p.v?`<video src="${blob(p.id)}" controls playsinline preload="metadata"></video>`:`<img src="${blob(p.id)}" alt="">`).join("")}</div>`:""}
+  ${col==="makes"?`<div><span class="pill" style="--c:var(${STCOL[x.status]||"--st-idea"})">${esc(x.status||"Idea")}</span></div>`:""}
+  ${rows?`<dl class="kv">${rows}</dl>`:""}
+  ${tagsOf(x).length?`<div class="row">${tagsOf(x).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>`:""}
+  ${extra}
+  <div class="row"><button class="btn primary" data-act="edit" data-col="${col}" data-id="${x.id}">Edit</button>
+  ${col==="inspo"?`<button class="btn" data-act="makefrom" data-id="${x.id}">Start a make from this</button>`:""}
+  ${col==="patterns"?`<button class="btn" data-act="makefrompat" data-id="${x.id}">Start a make</button>`:""}
+  ${col==="makes"?`<button class="btn" data-act="dupe" data-id="${x.id}">Make it again</button>`:""}</div>
+  </div>`)}
+
+function tlDetail(slug){const x=S.tl.find(t=>t.s===slug);if(!x)return;
+  const th=tlThumb(x);
+  openSheet(`<div class="bar"><h2>${esc(x.n)}</h2><button class="btn small" data-act="close">Close</button></div><div class="stack" style="gap:16px">
+  ${th?`<div class="tlbig" style="${th}" role="img" aria-label="${esc(x.n)}"></div>`:""}
+  <dl class="kv"><dt>Designer</dt><dd>${esc(x.d)}</dd>${x.t?`<dt>Type</dt><dd>${esc(x.t.replace(/\|/g,", "))}</dd>`:""}<dt>Status</dt><dd>${x.w?"Threadloop wishlist":"In your Threadloop stash"}</dd>
+  ${x.tg&&x.tg.f.length?`<dt>Fabric</dt><dd>${esc(x.tg.f.join(", "))}</dd>`:""}${x.tg&&x.tg.t.length?`<dt>Pattern types</dt><dd>${esc(x.tg.t.join(", "))}</dd>`:""}
+  ${x.tg&&x.tg.d.length?(()=>{const g={};x.tg.d.forEach(([l,gr])=>(g[gr]=g[gr]||[]).push(l));return Object.entries(g).map(([gr,ls])=>`<dt>${esc(gr)}</dt><dd>${esc(ls.join(", "))}</dd>`).join("")})():""}
+  ${/Free/.test(x.f)?`<dt>Price</dt><dd>Free pattern</dd>`:""}${/Unavailable/.test(x.f)?`<dt>Availability</dt><dd>Marked unavailable / out of print on Threadloop</dd>`:""}</dl>
+  <div><a class="btn" href="${esc(tlUrl(x.s))}" target="_blank" rel="noopener">Open in Threadloop ↗</a></div>
+  <p class="muted" style="margin:0;font-size:14px">Add your own notes (your size, adjustments, where the file lives) and it becomes a full pattern in your library, linked back to Threadloop.</p>
+  <div class="row"><button class="btn primary" data-act="tladopt" data-id="${esc(x.s)}">Add my notes</button><button class="btn" data-act="tlmake" data-id="${esc(x.s)}">Start a make</button></div></div>`)}
+function tlSheet(){const m=S.tlMeta;openSheet(`<div class="bar"><h2>Threadloop</h2><button class="btn small" data-act="close">Close</button></div><div class="stack">
+  <p style="margin:0">${m?`Your Threadloop stash is built in: <b>${esc(m.count)}</b> patterns, imported ${esc(m.importedOn)}, with pictures${S.tlTagged?", fabric and design-detail tags":""}.`:"Threadloop patterns haven't loaded. Check your connection and reopen the app."}</p>
+  <p class="muted" style="margin:0;font-size:14px">When your Threadloop stash changes, ask Claude to refresh it. The new list arrives next time you open the app. Patterns you've added notes to stay as they are.</p></div>`)}
+async function importTLPaste(){const msg=$("#tlmsg2");let j;try{j=JSON.parse($("#tlPasteBox").value)}catch(e){msg.textContent="That paste isn't readable data.";return}
+  if(!j||j.v!=="tags"||!Array.isArray(j.rows)||!j.vals){msg.textContent="That isn't the tag data.";return}
+  if(S.tlMeta&&j.rows.length!==S.tlMeta.count){msg.textContent=`This tag data is for ${j.rows.length} patterns but you have ${S.tlMeta.count} imported.`;return}
+  msg.textContent="Saving tags…";const size=700;const n=Math.ceil(j.rows.length/size);
+  try{await S.db.collection("threadloop").doc("tagvals").set(j.vals);for(let i=0;i<n;i++)await S.db.collection("threadloop").doc("tags-"+String(i).padStart(2,"0")).set({start:i*size,rows:j.rows.slice(i*size,(i+1)*size)});
+    msg.textContent=`Tags saved for ${j.rows.filter(Boolean).length} patterns.`;$("#tlPasteBox").value="";toast("Threadloop tags imported")}catch(e){msg.textContent="Saving failed ("+((e&&e.code)||"unknown")+")."}}
+async function importTL(file){const msg=$("#tlmsg");if(!S.db){toast("Can't save: not signed in");return}
+  let rows,pack=null;try{const j=JSON.parse(await file.text());if(Array.isArray(j))rows=j;else{pack=j;rows=j.rows}if(!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&typeof r[1]==="string"))throw 0}catch(e){msg.textContent="That doesn't look like a Threadloop export file.";return}
+  let sheetIds=null;
+  if(pack&&Array.isArray(pack.sheets)&&pack.cell){if(!S.assets){msg.textContent="Thumbnails need edit access in the Claude app.";return}sheetIds=[];
+    try{for(let i=0;i<pack.sheets.length;i++){msg.textContent=`Uploading thumbnails ${i+1} of ${pack.sheets.length}…`;const du=String(pack.sheets[i]);const bin=atob(du.slice(du.indexOf(",")+1));const arr=new Uint8Array(bin.length);for(let j=0;j<bin.length;j++)arr[j]=bin.charCodeAt(j);const b=new Blob([arr],{type:"image/jpeg"});const r=await S.assets.upload(b,{type:"image/jpeg"});sheetIds.push(r.id)}}
+    catch(e){msg.textContent=e&&e.code==="quota_or_state"?"Photo storage is full.":`Thumbnail upload failed (${(e&&(e.code||e.message))||"unknown"}). Try again.`;for(const id of sheetIds){try{await S.assets.delete(id)}catch(_){}}return}
+    rows=rows.map((r,i)=>{const o=r.slice(0,6);o[6]=pack.ok&&pack.ok[i]===false?-1:i;return o})}
+  msg.textContent="Importing "+rows.length+" patterns…";const size=450;const n=Math.ceil(rows.length/size);
+  try{for(let i=0;i<n;i++)await S.db.collection("threadloop").doc("c"+String(i).padStart(2,"0")).set({items:rows.slice(i*size,(i+1)*size)});
+    const old=(S.tlMeta&&S.tlMeta.chunks)||0;for(let i=n;i<old;i++){try{await S.db.collection("threadloop").doc("c"+String(i).padStart(2,"0")).delete()}catch(_){}}
+    const oldSheets=(S.tlMeta&&S.tlMeta.sheets)||[];
+    await S.db.collection("threadloop").doc("meta").set({count:rows.length,chunks:n,...(sheetIds?{sheets:sheetIds,cell:pack.cell}:{}),importedOn:new Date().toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"})});
+    if(sheetIds)for(const id of oldSheets){try{await S.assets.delete(id)}catch(_){}}
+    closeSheet();toast(rows.length+" Threadloop patterns imported")}catch(e){msg.textContent=e.code==="quota_exceeded"?"Storage is full.":"Import failed. Try again."}}
+function fieldHTML(f,v){const id="f-"+f.k;
+  if(f.h)return `<div class="fh" style="grid-column:1/-1">${esc(f.h)}</div>`;
+  const wide=["textarea","photos","settings","lookup","rating","notions","costs","autofill"].includes(f.t)||f.k==="title"||f.k==="name";
+  const wrap=h=>`<div class="f" style="${wide?"grid-column:1/-1":""}">${f.l?`<label for="${id}">${esc(f.l)}</label>`:""}${h}</div>`;
+  switch(f.t){
+   case"text":return wrap(`<input id="${id}" name="${f.k}" value="${esc(v)}" ${f.req?"required":""} placeholder="${esc(f.ph||"")}">`);
+   case"url":return wrap(`<input id="${id}" name="${f.k}" type="url" inputmode="url" value="${esc(v)}" placeholder="https://">`);
+   case"date":return wrap(`<input id="${id}" name="${f.k}" type="date" value="${esc(v)}">`);
+   case"textarea":return wrap(`<textarea id="${id}" name="${f.k}" placeholder="${esc(f.ph||"")}">${esc(v)}</textarea>`);
+   case"select":return wrap(`<select id="${id}" name="${f.k}">${f.o.map(o=>`<option ${o===(v??f.o[0])?"selected":""} value="${esc(o)}">${esc(o||"—")}</option>`).join("")}</select>`);
+   case"datalist":return wrap(`<input id="${id}" name="${f.k}" list="${f.o===GARMENTS?"dl-gar":"dl-fab"}" value="${esc(v)}" autocomplete="off">`);
+   case"patpick":{const p=v&&byId("patterns",v);return wrap(`<input id="${id}" name="${f.k}" list="dl-pat" value="${esc(p?patLabel(p):"")}" placeholder="Type to search your ${allPatterns().length} patterns" autocomplete="off">`)}
+   case"ref":{const items=[...S[f.ref]].sort((a,b)=>title(f.ref,a).localeCompare(title(f.ref,b)));
+     return wrap(`<select id="${id}" name="${f.k}"><option value="">${f.ref==="fabrics"?"Not from stash":"None"}</option>${items.map(r=>`<option value="${r.id}" ${r.id===v?"selected":""}>${esc(title(f.ref,r))}${f.ref==="patterns"&&r.designer?" · "+esc(r.designer):""}</option>`).join("")}</select>`)}
+   case"rating":return wrap(`<div class="rating" role="group" aria-label="${esc(f.l)}">${[1,2,3,4,5].map(n=>`<button type="button" data-act="rate" data-v="${n}" aria-pressed="${n<=(v||0)}">${n}</button>`).join("")}</div>`);
+   case"photos":return wrap(`<div class="thumbs" id="thumbs"></div><div class="row"><label class="btn small" style="color:var(--ink)">Add ${f.video?"photos or video":"photos"}<input type="file" accept="${f.video?"image/*,video/mp4,video/webm,video/quicktime":"image/*"}" multiple hidden data-upload></label><span class="muted" id="upmsg" style="font-size:13px"></span></div>`);
+   case"settings":return `<div style="grid-column:1/-1" class="stack" id="setrows"></div><div style="grid-column:1/-1"><button type="button" class="btn small" data-act="addset">+ Add machine setting</button></div>`;
+   case"lookup":return `<div style="grid-column:1/-1" id="lookup"></div>`;
+   case"notions":return `<div style="grid-column:1/-1" class="stack" id="notrows"></div><div style="grid-column:1/-1" class="row"><button type="button" class="btn small" data-act="addnot">+ Add notion</button>${S.notions.length?"":`<span class="muted" style="font-size:13px">Add notions on the Stash tab first, then link them here.</span>`}</div>`;
+   case"costs":return `<div style="grid-column:1/-1" class="stack" id="costrows"></div><div style="grid-column:1/-1" class="row between"><div class="row"><button type="button" class="btn small" data-act="addcost">+ Add cost</button><button type="button" class="btn small" data-act="pullcost">Pull in fabric, pattern & notion costs</button></div><b id="costtot" style="font-family:var(--mono)"></b></div>`;
+   case"autofill":if(!S.sample)return"";return `<div style="grid-column:1/-1" class="lookup"><div class="eyebrow">Fill from a shop page</div>
+     <p class="muted" style="margin:0;font-size:13px">Screenshot the shop, designer or Threadloop page (or copy its text) and Claude fills in the empty fields. This app can't open web links itself, so it reads what you give it.</p>
+     <textarea id="autoText" placeholder="Paste page text (optional)" style="min-height:70px"></textarea>
+     <div class="row">${S.sampleImg?`<label class="btn small" style="color:var(--ink)">Add screenshots<input type="file" accept="image/*" multiple hidden data-autoimg></label><span id="autoImgs" class="muted" style="font-size:13px"></span>`:""}
+     <button type="button" class="btn primary small" data-act="autofill">Fill in for me</button><span id="autoMsg" class="muted" style="font-size:13px"></span></div></div>`;
+  }return""}
+function setRowHTML(st,i){const ms=S.machines;
+  return `<div class="setrow" data-i="${i}"><div class="row between"><div class="f" style="flex:1;min-width:0"><label>Machine</label><select data-s="machineId"><option value="">Choose…</option>${ms.map(m=>`<option value="${m.id}" ${m.id===st.machineId?"selected":""}>${esc(m.name)}</option>`).join("")}</select></div>
+  <button type="button" class="btn small danger" data-act="delset" data-i="${i}" style="align-self:flex-end">Remove</button></div>
+  <div class="fgrid">${SET_FIELDS.map(([k,l,p])=>`<div class="f" style="${k==="notes"||k==="usedFor"?"grid-column:1/-1":""}"><label>${l}</label><input data-s="${k}" value="${esc(st[k]||"")}" placeholder="${esc(p)}"></div>`).join("")}</div></div>`}
+
+function editForm(col,id,preset){const x=id?byId(col,id):null;const base=x?JSON.parse(JSON.stringify(x)):Object.assign({},preset||{});
+  if(col==="makes"&&!base.settings)base.settings=[];
+  S.form={col,id:x?x.id:null,data:base,photos:[...(base.photos||[])],removed:[],settings:base.settings||[],notions:base.notions||[],costs:base.costs||(base.cost?[{item:"Total",amount:base.cost}]:[]),autoImgs:[],rating:base.rating||0,uploading:0,confirmDel:false};
+  openSheet(`<div class="bar"><h2>${x?"Edit "+esc(title(col,x)):"New "+SINGULAR[col]}</h2><div class="row"><button class="btn small" data-act="close">Cancel</button><button class="btn primary small" data-act="save">Save</button></div></div>
+  <form id="ef" class="fgrid" onsubmit="return false">${SCHEMA[col].map(f=>fieldHTML(f,base[f.k])).join("")}</form>
+  <div class="row" style="margin-top:18px;justify-content:space-between"><button class="btn primary" data-act="save">Save</button>${x?`<button class="btn danger" data-act="del">Delete</button>`:""}</div>`);
+  drawThumbs();drawSet();drawLookup();drawNot();drawCost();
+}
+function drawThumbs(){const t=$("#thumbs");if(!t)return;t.innerHTML=S.form.photos.map((p,i)=>`<div class="tb">${media(p)}<button type="button" data-act="rmphoto" data-i="${i}" aria-label="Remove">×</button></div>`).join("")}
+function drawSet(){const w=$("#setrows");if(!w)return;w.innerHTML=S.form.settings.map(setRowHTML).join("")||`<div class="muted" style="font-size:13px">Add one row per machine or per job (e.g. overlocker for seams, coverstitch for hems).</div>`}
+function readSet(){const w=$("#setrows");if(!w)return;S.form.settings=[...w.querySelectorAll(".setrow")].map(r=>{const o={};r.querySelectorAll("[data-s]").forEach(i=>{if(i.value.trim())o[i.dataset.s]=i.value.trim()});return o})}
+function notRowHTML(r,i){return `<div class="minirow" data-i="${i}"><div class="f"><label>Notion</label><select data-n="notionId"><option value="">Choose…</option>${[...S.notions].sort((a,b)=>a.name.localeCompare(b.name)).map(n=>`<option value="${n.id}" ${n.id===r.notionId?"selected":""}>${esc(n.name)}</option>`).join("")}</select></div><div class="f"><label>Qty used</label><input data-n="qty" value="${esc(r.qty||"")}"></div><button type="button" class="btn small danger" data-act="delnot" data-i="${i}">×</button></div>`}
+function costRowHTML(r,i){return `<div class="minirow" data-i="${i}"><div class="f"><label>Item</label><input data-c="item" value="${esc(r.item||"")}" placeholder="e.g. Fabric, zip, pattern"></div><div class="f"><label>Amount</label><input data-c="amount" inputmode="decimal" value="${esc(r.amount||"")}" placeholder="$"></div><button type="button" class="btn small danger" data-act="delcost" data-i="${i}">×</button></div>`}
+function readRows(wrap,attr){const w=$(wrap);if(!w)return null;return [...w.querySelectorAll(".minirow")].map(r=>{const o={};r.querySelectorAll("["+attr+"]").forEach(i=>{if(i.value.trim())o[i.getAttribute(attr)]=i.value.trim()});return o})}
+function drawNot(){const w=$("#notrows");if(w)w.innerHTML=S.form.notions.map(notRowHTML).join("")}
+function drawCost(){const w=$("#costrows");if(!w)return;w.innerHTML=S.form.costs.map(costRowHTML).join("");updTot()}
+function updTot(){const r=readRows("#costrows","data-c")||[];const t=r.reduce((a,c)=>a+money(c.amount),0);const el=$("#costtot");if(el)el.textContent=r.length?"Total "+aud(t):""}
+async function autofill(){const col=S.form.col;const text=($("#autoText")?.value||"").trim();const imgs=S.form.autoImgs||[];const msg=$("#autoMsg");
+  if(!text&&!imgs.length){toast("Add a screenshot or paste some page text first");return}
+  const fields=SCHEMA[col].filter(f=>AUTOKEYS[col].includes(f.k));
+  const prompt=`You are filling in a sewing ${col==="patterns"?"pattern":"fabric"} record from a shop, designer or catalogue page. Use only information shown in the screenshots or text below. Leave out anything not stated; do not guess.
+Reply with only a JSON object using these keys, omitting any you cannot fill:
+${fields.map(f=>`"${f.k}": ${f.l}${f.o?` (choose the closest of: ${f.o.filter(Boolean).join(", ")})`:""}`).join("\n")}
+${col==="patterns"?'For "suggested", give the recommended fabric types as a comma-separated list. For "yardage", give the fabric requirement for the middle size if several are listed, with units as shown. For "link", only a URL that appears in the material.':'For "bought", give the shop name. Width in cm, weight as shown (e.g. gsm).'}
+${text?`\nPage text:\n"""\n${text.slice(0,15000)}\n"""`:""}${imgs.length?`\n${imgs.length} screenshot(s) of the page are attached.`:""}`;
+  const btn=document.querySelector('[data-act="autofill"]');btn.disabled=true;msg.textContent="Reading the page…";
+  try{const opts={};if(imgs.length)opts.images=imgs;const r=await S.sample.json(prompt,opts);const f=$("#ef");let n=0;
+    if(r&&typeof r==="object")for(const k of AUTOKEYS[col]){const v=r[k];const el=f.elements[k];if(v==null||v===""||!el||el.value.trim())continue;const sv=Array.isArray(v)?v.join(", "):String(v);
+      if(el.tagName==="SELECT"){const o=[...el.options].find(o=>norm(o.value)===norm(sv));if(!o)continue;el.value=o.value}else el.value=sv;n++}
+    msg.textContent=n?`Filled ${n} field${n===1?"":"s"}. Check them before saving.`:"Nothing new to fill in from that page.";if(col==="fabrics")drawLookup()}
+  catch(e){msg.textContent={not_granted:"Claude wasn't allowed to run here.",rate_limited:"Too many requests just now. Try again in a minute.",invalid_json:"Couldn't read that page. Try a clearer screenshot.",image_rejected:"That screenshot couldn't be read.",refused:"Claude couldn't help with that page."}[e.code]||"Something went wrong. Try again."}
+  finally{btn.disabled=false}}
+function drawLookup(){const w=$("#lookup");if(!w)return;const ft=$("#f-fabricType")?.value,g=$("#f-garment")?.value;
+  if(!ft){w.innerHTML="";return}const res=pastFor(ft,g,S.form.id);
+  w.innerHTML=`<div class="lookup"><div class="eyebrow">Last time with ${esc(ft)}</div>${pastBlock(res,{copy:1,max:3,emptyMsg:`First time logging ${esc(ft)}. Whatever you record here will show up next time.`})}</div>`}
+
+function collect(){const f=$("#ef");const o={...S.form.data};
+  SCHEMA[S.form.col].forEach(s=>{if(!s.k||["photos","settings","_lookup","_auto","notions","costs","rating"].includes(s.k))return;const el=f.elements[s.k];if(el)o[s.k]=el.value.trim()});
+  if(S.form.col==="makes"){readSet();o.settings=S.form.settings.filter(s=>Object.keys(s).length);
+    o.notions=(readRows("#notrows","data-n")||[]).filter(r=>r.notionId);o.costs=(readRows("#costrows","data-c")||[]).filter(r=>r.item||r.amount);delete o.cost}
+  if(SCHEMA[S.form.col].some(s=>s.t==="rating"))o.rating=S.form.rating||0;
+  o.photos=S.form.photos;for(const k in o)if(o[k]===""||o[k]===undefined)delete o[k];return o}
+
+async function save(){if(!S.db){toast("Can't save: not signed in");return}
+  if(S.form.uploading){toast("Wait for the upload to finish");return}
+  const o=collect();const req=SCHEMA[S.form.col].find(s=>s.req);if(req&&!o[req.k]){toast(req.l+" is needed");$("#f-"+req.k)?.focus();return}
+  for(const s of SCHEMA[S.form.col].filter(s=>s.t==="patpick")){if(o[s.k]){const id=await resolvePat(o[s.k]);if(id===null){toast("Pick a pattern from the list, or add it on the Patterns tab first");return}o[s.k]=id}}
+  const now=Date.now();o.updatedAt=now;if(!o.createdAt)o.createdAt=now;const id=S.form.id||uid();delete o.id;
+  try{await S.db.collection(S.form.col).doc(id).set(o);
+    for(const a of S.form.removed){try{await S.assets?.delete(a)}catch(e){}}
+    const col=S.form.col;closeSheet();toast("Saved");detail(col,id)}
+  catch(e){toast(e.code==="quota_exceeded"?"Storage is full: delete something first":e.code==="invalid_argument"?"Couldn't save: you may not have edit access":"Couldn't save. Try again.")}}
+async function del(){const f=S.form;if(!f.confirmDel){f.confirmDel=true;document.querySelectorAll('[data-act="del"]').forEach(b=>b.textContent="Tap again to delete");return}
+  try{await S.db.collection(f.col).doc(f.id).delete();for(const p of (f.data.photos||[])){try{await S.assets?.delete(p.id)}catch(e){}}closeSheet();toast("Deleted")}catch(e){toast("Couldn't delete")}}
+
+async function shrink(file){if(!/^image\/(jpeg|png|webp|heic|heif)$/.test(file.type)&&file.type!=="")return file;
+  try{const bmp=await createImageBitmap(file);const max=1800;const sc=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    const c=document.createElement("canvas");c.width=Math.round(bmp.width*sc);c.height=Math.round(bmp.height*sc);c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);
+    return await new Promise(r=>c.toBlob(b=>r(b||file),"image/jpeg",.86))}catch(e){return file}}
+async function upload(files){if(!S.assets){toast("Uploads need edit access in the Claude app");return}
+  const msg=$("#upmsg");for(const file of files){S.form.uploading++;msg.textContent="Uploading…";
+   try{const isV=file.type.startsWith("video/");
+     if(file.type==="video/quicktime"){toast("iPhone .mov videos can't be stored. Save it as a link, or export as MP4.");continue}
+     const b=isV?file:await shrink(file);
+     const r=await S.assets.upload(b,isV?undefined:{type:b.type&&b.type!==""?b.type:"image/jpeg"});
+     S.form.photos.push(isV?{id:r.id,v:1}:{id:r.id});drawThumbs()}
+   catch(e){toast(e.code==="too_large"?"That file is over 20 MB":e.code==="unsupported_type"?"That file type can't be stored":e.code==="quota_or_state"?"Photo storage is full":"Upload failed")}
+   finally{S.form.uploading--}}msg.textContent=""}
+
+function bulkSheet(){openSheet(`<div class="bar"><h2>Paste a pattern list</h2><button class="btn small" data-act="close">Close</button></div>
+  <div class="stack"><p class="muted" style="margin:0">One pattern per line. Use <b>Designer: Pattern name</b>, just the name, or paste Threadloop pattern links. You can fill in the details later.</p>
+  <form onsubmit="return false"><textarea id="bulkIn" style="width:100%;min-height:220px;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--surface)" placeholder="Closet Core: Pietra Pants&#10;Helen's Closet: Blanca Flight Suit&#10;https://threadloop.app/patterns/…"></textarea></form>
+  <div class="row"><select id="bulkStatus" style="border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--surface)"><option>Owned</option><option>Wishlist</option></select><button class="btn primary" data-act="bulkgo">Add patterns</button></div></div>`)}
+function parseLine(l){l=l.trim();if(!l)return null;
+  if(/^https?:\/\//i.test(l)){const o={threadloop:/threadloop\.app/i.test(l)?l:undefined,link:/threadloop\.app/i.test(l)?undefined:l};
+    const seg=l.replace(/[?#].*$/,"").replace(/\/+$/,"").split("/").pop()||"Pattern";o.name=decodeURIComponent(seg).replace(/^\d+-?/,"").replace(/[-_]+/g," ").replace(/\b\w/g,c=>c.toUpperCase()).trim()||"Pattern";o.notes="Name taken from the link; check it.";return o}
+  const m=l.split(/\s*:\s*/);if(m.length>1&&m[0])return {designer:m[0],name:m.slice(1).join(": ")};return {name:l}}
+async function bulkGo(){if(!S.db)return toast("Can't save: not signed in");const lines=$("#bulkIn").value.split("\n").map(parseLine).filter(Boolean);const st=$("#bulkStatus").value;
+  if(!lines.length)return toast("Paste at least one line");let n=0;
+  for(const p of lines){const o={...p,status:st,createdAt:Date.now(),updatedAt:Date.now()};for(const k in o)if(o[k]===undefined)delete o[k];
+    try{await S.db.collection("patterns").doc(uid()).set(o);n++}catch(e){if(e.code==="quota_exceeded")break}}
+  closeSheet();toast(`Added ${n} pattern${n===1?"":"s"}`);location.hash="#patterns"}
+
+async function saveSettingsDoc(key,val){if(!S.db)return toast("Can't save: not signed in");try{await S.db.collection("settings").doc(key).set(val);return true}catch(e){toast("Couldn't save");return false}}
+async function exportAll(){const data={app:"sewing-book",v:2,exported:new Date().toISOString(),docs:{},photos:{}};
+  for(const c of ["makes","inspo","patterns","fabrics","notions","machines"])data.docs[c]=S[c];data.docs.settings=Object.values(S.settings);
+  toast("Packing backup…");
+  for(const [id] of LOCALURL){try{const b=await IDB.get("blobs",id);if(b)data.photos[id]=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)})}catch(_){}}
+  const name="sewing-book-backup-"+new Date().toISOString().slice(0,10)+".json";
+  try{await S.downloads.save({filename:name,data:JSON.stringify(data)});toast("Backup saved")}catch(e){if(e&&e.name!=="AbortError")toast("Backup not saved")}}
+async function restoreBackup(file){let j;try{j=JSON.parse(await file.text())}catch(e){toast("That isn't a Sewing Book backup");return}
+  if(!j||j.app!=="sewing-book"||!j.docs){toast("That isn't a Sewing Book backup");return}
+  let n=0;for(const [id,du] of Object.entries(j.photos||{})){try{const b=await (await fetch(du)).blob();await IDB.put("blobs",b,id);if(!LOCALURL.has(id))LOCALURL.set(id,URL.createObjectURL(b))}catch(_){}}
+  for(const [c,list] of Object.entries(j.docs)){for(const d of list||[]){const {id,...rest}=d;if(!id)continue;await S.db.collection(c).doc(id).set(rest);n++}}
+  toast(`Restored ${n} entries`);render()}
+
+/* ---------- events ---------- */
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;
+  if(b.tagName==="A"&&a==="open")e.preventDefault();
+  if(a==="quickadd")return openSheet(`<div class="bar"><h2>Add</h2><button class="btn small" data-act="close">Close</button></div><div class="list">
+    ${[["inspo","Inspo, tip or screenshot"],["makes","A make"],["patterns","A pattern"],["fabrics","Fabric to the stash"],["notions","A notion (zip, elastic, interfacing…)"],["machines","A machine"]].map(([c,l])=>`<button class="li" data-act="new" data-col="${c}"><span class="tx"><div class="t">${l}</div></span></button>`).join("")}
+    <button class="li" data-act="bulk"><span class="tx"><div class="t">Paste a list of patterns</div><div class="s">From Threadloop or anywhere else</div></span></button></div>`);
+  if(a==="close")return closeSheet();
+  if(a==="new")return editForm(b.dataset.col,null,b.dataset.col==="makes"?{status:"Planned"}:b.dataset.col==="patterns"?{status:"Owned"}:b.dataset.col==="inspo"?{kind:"Inspiration"}:{});
+  if(a==="open")return detail(b.dataset.col,b.dataset.id);
+  if(a==="edit")return editForm(b.dataset.col,b.dataset.id);
+  if(a==="save")return save();
+  if(a==="del")return del();
+  if(a==="chip"){S.filters[b.dataset.col+"Chip"]=b.dataset.v;return render()}
+  if(a==="gchip"){S.filters[b.dataset.col+"G"]=b.dataset.v;return render()}
+  if(a==="rate"){S.form.rating=+b.dataset.v===S.form.rating?0:+b.dataset.v;b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.v<=S.form.rating));return}
+  if(a==="fabchip"){S.filters.patFab=b.dataset.v;S.show.patterns=60;return render()}
+  if(a==="tlpaste"){return importTLPaste()}
+  if(a==="more"){S.show[b.dataset.col]=(S.show[b.dataset.col]||60)+60;return render()}
+  if(a==="opentl")return tlDetail(b.dataset.id);
+  if(a==="tlsync")return tlSheet();
+  if(a==="tladopt"||a==="tlmake"){if(!S.db)return toast("Can't save: not signed in");try{const id=await adoptTL(b.dataset.id);if(a==="tladopt")return editForm("patterns",id);const p=byId("patterns",id);return editForm("makes",null,{title:p.name,status:"Planned",garment:p.garment,patternId:id})}catch(e){return toast("Couldn't add it. Try again.")}}
+  if(a==="seg"){S.filters.seg=b.dataset.v;return render()}
+  if(a==="autofill")return autofill();
+  if(a==="addnot"){S.form.notions=readRows("#notrows","data-n");S.form.notions.push({});drawNot();return}
+  if(a==="delnot"){S.form.notions=readRows("#notrows","data-n");S.form.notions.splice(+b.dataset.i,1);drawNot();return}
+  if(a==="addcost"){S.form.costs=readRows("#costrows","data-c");S.form.costs.push({});drawCost();return}
+  if(a==="delcost"){S.form.costs=readRows("#costrows","data-c");S.form.costs.splice(+b.dataset.i,1);drawCost();return}
+  if(a==="pullcost"){const rows=readRows("#costrows","data-c");const have=new Set(rows.map(r=>norm(r.item)));let n=0;const add=(item,amt)=>{if(money(amt)&&!have.has(norm(item))){rows.push({item,amount:String(money(amt))});have.add(norm(item));n++}};
+    const fab=byId("fabrics",$("#f-fabricId")?.value);if(fab)add("Fabric: "+fab.name,fab.cost);
+    const pat=byId("patterns",$("#f-patternId")?.value);if(pat)add("Pattern: "+pat.name,pat.cost);
+    (readRows("#notrows","data-n")||[]).forEach(r=>{const nt=byId("notions",r.notionId);if(nt&&money(nt.cost)){const q=money(r.qty)||1;add(nt.name+(q!==1?" × "+r.qty:""),money(nt.cost)*q)}});
+    S.form.costs=rows;drawCost();toast(n?`Added ${n} cost${n===1?"":"s"}`:"No costs found on the linked fabric, pattern or notions");return}
+  if(a==="toshop"){const n=byId("notions",b.dataset.id);const s=S.settings.shopping||{items:[]};if(n&&await saveSettingsDoc("shopping",{items:[...s.items,{id:uid(),text:[n.name,n.size,n.colour].filter(Boolean).join(", "),done:false}]}))toast("Added to shopping list");return}
+  if(a==="addset"){readSet();S.form.settings.push({});drawSet();return}
+  if(a==="delset"){readSet();S.form.settings.splice(+b.dataset.i,1);drawSet();return}
+  if(a==="copyset"){const m=byId("makes",b.dataset.id);if(!m)return;readSet();S.form.settings=[...S.form.settings.filter(s=>Object.keys(s).length),...JSON.parse(JSON.stringify(m.settings||[]))];drawSet();toast("Settings copied in. Adjust as needed.");$("#setrows").scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(a==="rmphoto"){const [p]=S.form.photos.splice(+b.dataset.i,1);if(p)S.form.removed.push(p.id);drawThumbs();return}
+  if(a==="makefrom"){const x=byId("inspo",b.dataset.id);return editForm("makes",null,{title:x.title,status:"Idea",garment:x.garment,fabricType:x.fabricType,patternId:x.patternId,construction:x.notes?("From inspo: "+x.notes):"",tags:x.tags})}
+  if(a==="makefrompat"){const x=byId("patterns",b.dataset.id);return editForm("makes",null,{title:x.name,status:"Planned",garment:x.garment,patternId:x.id,size:x.mySize,fit:x.adjustments})}
+  if(a==="dupe"){const x=byId("makes",b.dataset.id);const c=JSON.parse(JSON.stringify(x));["id","photos","rating","again","started","finished","cost","createdAt","updatedAt","fabricId"].forEach(k=>delete c[k]);c.status="Planned";c.title=x.title+" (again)";c.fit=[x.fit,x.nextTime&&("Last time noted: "+x.nextTime)].filter(Boolean).join("\n\n");return editForm("makes",null,c)}
+  if(a==="bulk")return bulkSheet();
+  if(a==="bulkgo")return bulkGo();
+  if(a==="export")return exportAll();
+  if(a==="shopdel"){const s=S.settings.shopping||{items:[]};return saveSettingsDoc("shopping",{items:s.items.filter(i=>i.id!==b.dataset.id)})}
+  if(a==="shopclear"){const s=S.settings.shopping||{items:[]};return saveSettingsDoc("shopping",{items:s.items.filter(i=>!i.done)})}
+});
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.matches("[data-upload]")){upload([...t.files]);t.value="";return}
+  if(t.matches("[data-restore]")){const f=t.files[0];t.value="";if(f)restoreBackup(f);return}
+  if(t.matches("[data-tlfile]")){const f=t.files[0];t.value="";if(f)importTL(f);return}
+  if(t.matches("[data-autoimg]")){S.form.autoImgs=[...t.files].slice(0,S.sampleImg?.maxCount||5);$("#autoImgs").textContent=S.form.autoImgs.length+" screenshot"+(S.form.autoImgs.length===1?"":"s")+" ready";t.value="";return}
+  if(t.dataset.act==="shoptoggle"){const s=S.settings.shopping||{items:[]};saveSettingsDoc("shopping",{items:s.items.map(i=>i.id===t.dataset.id?{...i,done:t.checked}:i)});return}
+  if(t.id==="f-fabricId"&&t.value){const f=byId("fabrics",t.value);if(f){[["fabricType","fabricType"],["fibre","fibre"],["weight","weight"],["stretch","stretch"]].forEach(([a,b])=>{const el=$("#f-"+a);if(el&&f[b])el.value=f[b]});drawLookup()}}
+  if(t.id==="f-fabricType"||t.id==="f-garment")drawLookup();
+});
+let qT;document.addEventListener("input",e=>{const t=e.target;
+  if(t.dataset.q){S.filters[t.dataset.q+"Q"]=t.value;clearTimeout(qT);qT=setTimeout(()=>{const pos=t.selectionStart;render();const n=$("#q-"+t.dataset.q);if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}},250)}
+  if(t.id==="lkF"||t.id==="lkG"){S.filters.lkF=$("#lkF").value;S.filters.lkG=$("#lkG").value;const r=$("#lkRes");const f=S.filters.lkF,g=S.filters.lkG;r.innerHTML=f||g?pastBlock(pastFor(f,g),{max:6,emptyMsg:`No makes logged yet with ${esc(f||g)}. Once you log one, its settings will show here.`}):""}
+  if(t.matches("[data-c]"))updTot();
+  if(t.id==="f-fabricType"){clearTimeout(drawLookup.t);drawLookup.t=setTimeout(drawLookup,300)}
+});
+document.addEventListener("submit",async e=>{const f=e.target;
+  if(f.dataset.form==="shop"){e.preventDefault();const v=$("#shopIn").value.trim();if(!v)return;const s=S.settings.shopping||{items:[]};if(await saveSettingsDoc("shopping",{items:[...s.items,{id:uid(),text:v,done:false}]}))toast("Added")}
+  if(f.dataset.form==="meas"){e.preventDefault();const values={};[...f.elements].forEach(i=>{if(i.name&&i.value.trim())values[i.name]=i.value.trim()});if(await saveSettingsDoc("measurements",{values,updated:new Date().toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"})}))toast("Measurements saved")}
+});
+$("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#sheet").hidden)closeSheet()});
+window.addEventListener("hashchange",route);
+
+/* datalists */
+document.body.insertAdjacentHTML("beforeend",`<datalist id="dl-gar">${GARMENTS.map(g=>`<option value="${esc(g)}">`).join("")}</datalist><datalist id="dl-fab">${FABRICS.map(g=>`<option value="${esc(g)}">`).join("")}</datalist>`);
+
+/* ---------- on-device storage ---------- */
+const IDB={db:null,
+  open(){return new Promise((res,rej)=>{let r;try{r=indexedDB.open("sewing-book",1)}catch(e){rej(e);return}r.onupgradeneeded=()=>{const d=r.result;d.createObjectStore("docs");d.createObjectStore("blobs")};r.onsuccess=()=>{IDB.db=r.result;res()};r.onerror=()=>rej(r.error)})},
+  req(store,mode,fn){return new Promise((res,rej)=>{const t=IDB.db.transaction(store,mode);const q=fn(t.objectStore(store));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})},
+  get(store,k){return IDB.req(store,"readonly",s=>s.get(k))},
+  put(store,v,k){return IDB.req(store,"readwrite",s=>s.put(v,k))},
+  del(store,k){return IDB.req(store,"readwrite",s=>s.delete(k))},
+  entries(store){return new Promise((res,rej)=>{const t=IDB.db.transaction(store);const s=t.objectStore(store);const k=s.getAllKeys(),v=s.getAll();t.oncomplete=()=>res(k.result.map((x,i)=>[x,v.result[i]]));t.onerror=()=>rej(t.error)})}};
+function makeDB(){const local={},base={},subs={};
+  const emit=c=>{const merged=Object.assign({},base[c]||{},local[c]||{});const docs=Object.entries(merged).map(([id,d])=>({id,exists:true,data:()=>d}));(subs[c]||[]).forEach(fn=>{try{fn({docs,size:docs.length,empty:!docs.length,metadata:{fromCache:false,hasPendingWrites:false}})}catch(e){console.error(e)}})};
+  const api={local,base,emit,collection(c){return{
+    onSnapshot(fn){(subs[c]=subs[c]||[]).push(fn);setTimeout(()=>emit(c),0);return()=>{subs[c]=subs[c].filter(f=>f!==fn)}},
+    doc(id){id=id||uid();return{id,
+      async get(){const d=(local[c]||{})[id]||(base[c]||{})[id];return{id,exists:!!d,data:()=>d}},
+      async set(d){d=JSON.parse(JSON.stringify(d));await IDB.put("docs",d,c+"/"+id);(local[c]=local[c]||{})[id]=d;emit(c)},
+      async update(d){const cur=(local[c]||{})[id]||(base[c]||{})[id];if(!cur)throw{code:"invalid_argument"};await this.set({...cur,...d})},
+      async delete(){await IDB.del("docs",c+"/"+id);if(local[c])delete local[c][id];if(base[c])delete base[c][id];emit(c)}}}}}};
+  return api}
+function saveFile({filename,data}){const file=new File([data],filename,{type:"application/json"});
+  if(navigator.canShare&&navigator.canShare({files:[file]}))return navigator.share({files:[file],title:filename});
+  const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);return Promise.resolve()}
+
+/* ---------- boot ---------- */
+route();
+(async()=>{
+  try{await IDB.open()}catch(e){S.db=null;S.ready=true;render();return}
+  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(_){}
+  const db=makeDB();S.db=db;
+  S.assets={async upload(b){const id=uid()+uid();await IDB.put("blobs",b,id);const url=URL.createObjectURL(b);LOCALURL.set(id,url);return{id,url,sizeBytes:b.size,contentType:b.type}},
+    async delete(id){if(/[\/.]/.test(id))return{deleted:false};await IDB.del("blobs",id);const u=LOCALURL.get(id);if(u)URL.revokeObjectURL(u);LOCALURL.delete(id);return{deleted:true}}};
+  S.downloads={save:saveFile};S.sample=null;
+  for(const [id,b] of await IDB.entries("blobs"))LOCALURL.set(id,URL.createObjectURL(b));
+  const seen=new Set((await IDB.get("docs","_meta/seeded"))||[]);
+  for(const [k,d] of await IDB.entries("docs")){if(k.startsWith("_meta/"))continue;const i=k.indexOf("/");const c=k.slice(0,i),id=k.slice(i+1);(db.local[c]=db.local[c]||{})[id]=d}
+  try{const seed=await (await fetch("data/seed.json",{cache:"no-cache"})).json();let added=false;
+    for(const [c,list] of Object.entries(seed))for(const d of list){const key=c+"/"+d.id;if(seen.has(key))continue;seen.add(key);added=true;if(!(db.local[c]||{})[d.id]){const {id,...rest}=d;await IDB.put("docs",rest,key);(db.local[c]=db.local[c]||{})[id]=rest}}
+    if(added)await IDB.put("docs",[...seen],"_meta/seeded")}catch(_){}
+  try{const tl=await (await fetch("data/threadloop.json",{cache:"no-cache"})).json();db.base.threadloop={};tl.docs.forEach(({id,...d})=>db.base.threadloop[id]=d)}catch(_){S.tlFail=true}
+  let rT;const soon=()=>{clearTimeout(rT);rT=setTimeout(()=>{if(!S.form)render()},40)};
+  ["makes","inspo","patterns","fabrics","notions","machines","settings","threadloop"].forEach(c=>db.collection(c).onSnapshot(snap=>{
+    const docs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(c==="settings"){S.settings={};docs.forEach(d=>S.settings[d.id]=d)}else if(c==="threadloop")setTL(docs);else{S[c]=docs;if(c==="patterns")refreshPatDL()}
+    S.ready=true;soon()}));
+})();
+</script>
+</body>
+</html>
