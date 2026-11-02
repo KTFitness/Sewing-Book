@@ -613,7 +613,7 @@ function closeSheet(){$("#sheet").hidden=true;$("#pane").innerHTML="";document.b
 
 function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
   const stepKeys=["steps","fix","garmentFix"];
-  const rows=sch.filter(f=>f.k&&!["photos","settings","_lookup","_auto","notions","costs","title","name",...stepKeys].includes(f.k)&&x[f.k]).map(f=>{let v=x[f.k];
+  const rows=sch.filter(f=>f.k&&!["photos","settings","_lookup","_auto","notions","costs","title","name","tags",...stepKeys].includes(f.k)&&x[f.k]).map(f=>{let v=x[f.k];
     if(f.t==="ref"||f.t==="patpick"){const rc=f.ref||"patterns";const r=byId(rc,v);if(!r)return"";v=`<a href="#" data-act="open" data-col="${rc}" data-id="${r.id}">${esc(title(rc,r))}</a>`}
     else if(f.t==="url")v=`<a href="${esc(v)}" target="_blank" rel="noopener">${esc(v.replace(/^https?:\/\/(www\.)?/,"").slice(0,48))}</a>`;
     else if(f.t==="rating")v=`<span style="font-family:var(--mono)">${"●".repeat(v)}${"○".repeat(5-v)}</span>`;
@@ -623,8 +623,8 @@ function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
   let extra="";
   if(col==="patterns"&&x.tlSlug){const t=S.tl.find(z=>z.s===x.tlSlug);if(t&&t.tg){const g={};t.tg.d.forEach(([l,gr])=>(g[gr]=g[gr]||[]).push(l));extra+=`<div class="stack" style="gap:6px"><h3>From Threadloop</h3><dl class="kv">${t.tg.f.length?`<dt>Fabric</dt><dd>${esc(t.tg.f.join(", "))}</dd>`:""}${t.tg.t.length?`<dt>Pattern types</dt><dd>${esc(t.tg.t.join(", "))}</dd>`:""}${Object.entries(g).map(([gr,ls])=>`<dt>${esc(gr)}</dt><dd>${esc(ls.join(", "))}</dd>`).join("")}</dl></div>`}}
   if(col==="patterns"&&!photos.length&&x.tlSlug){const t=S.tl.find(z=>z.s===x.tlSlug);const st=t&&tlThumb(t);if(st)extra+=`<div class="tlbig" style="${st}"></div>`}
-  stepKeys.forEach(k=>{if(!x[k])return;const f=sch.find(z=>z.k===k);if(!f)return;const lines=String(x[k]).split(/\n+/).map(t=>t.replace(/^\s*(\d+[.)]|[-•*])\s*/,"").trim()).filter(Boolean);
-    extra+=`<div class="stack" style="gap:8px"><h3>${esc(f.l)}</h3>${lines.length>1?`<ol class="steps">${lines.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`:`<p style="margin:0;white-space:pre-wrap">${esc(x[k])}</p>`}</div>`});
+  let stepsHTML="";stepKeys.forEach(k=>{if(!x[k])return;const f=sch.find(z=>z.k===k);if(!f)return;const lines=String(x[k]).split(/\n+/).map(t=>t.replace(/^\s*(\d+[.)]|[-•*])\s*/,"").trim()).filter(Boolean);
+    stepsHTML+=`<div class="stack" style="gap:8px"><h3>${esc(f.l)}</h3>${lines.length>1?`<ol class="steps">${lines.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`:`<p style="margin:0;white-space:pre-wrap">${esc(x[k])}</p>`}</div>`});
   if((col==="tips")&&(x.settings||[]).length)extra+=`<div class="stack"><h3>Machine settings</h3>${x.settings.map(dial).join("")}</div>`;
   if(col==="makes"||col==="alterations"){extra+=`<div class="stack"><h3>Machine settings</h3>${(x.settings||[]).map(dial).join("")||`<div class="muted">None recorded.</div>`}</div>`;
     const nl=(x.notions||[]).map(r=>{const n=byId("notions",r.notionId);return n?`<button class="li" data-act="open" data-col="notions" data-id="${n.id}"><span class="tx"><div class="t">${esc(n.name)}</div><div class="s">${esc([n.category,r.qty&&("used "+r.qty)].filter(Boolean).join(" · "))}</div></span></button>`:""}).join("");
@@ -651,7 +651,9 @@ function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
   <div class="stack" style="gap:18px">
   ${photos.length?`<div class="gallery">${photos.map(p=>p.v?`<video src="${blob(p.id)}" controls playsinline preload="metadata"></video>`:`<img src="${blob(p.id)}" alt="">`).join("")}</div>`:""}
   ${col==="makes"?`<div><span class="pill" style="--c:var(${STCOL[x.status]||"--st-idea"})">${esc(x.status||"Idea")}</span></div>`:col==="alterations"?`<div><span class="pill" style="--c:var(${ALTCOL[x.status]||"--st-idea"})">${esc(x.status||"To do")}</span></div>`:""}
+  ${col==="fitting"?"":stepsHTML}
   ${rows?`<dl class="kv">${rows}</dl>`:""}
+  ${col==="fitting"?stepsHTML:""}
   ${tagsOf(x).length?`<div class="row">${tagsOf(x).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>`:""}
   ${extra}
   <div class="row"><button class="btn primary" data-act="edit" data-col="${col}" data-id="${x.id}">Edit</button>
