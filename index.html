@@ -109,6 +109,9 @@ h1{font-size:26px} h2{font-size:20px} h3{font-size:17px}
 .masonry .card{break-inside:avoid;margin-bottom:10px;width:100%}
 .masonry .card .ph{aspect-ratio:auto;min-height:90px}
 .masonry .card .ph img{height:auto}
+.card .ph.emb{position:relative;aspect-ratio:4/5;display:block;background:var(--sunk)}
+.card .ph.emb iframe{position:absolute;left:0;top:0;width:340px;height:760px;border:0;transform-origin:0 0;transform:translateY(calc(-54px * var(--s,.5))) scale(var(--s,.5));pointer-events:none}
+.embfull{width:100%;height:620px;border:0;border-radius:10px;background:var(--sunk)}
 
 /* settings readout: the machine dial card */
 .dial{border:1px solid var(--line);border-radius:var(--r);background:var(--sunk);padding:12px;display:flex;flex-direction:column;gap:8px}
@@ -425,6 +428,10 @@ const ph=s=>esc((s||"?").trim().charAt(0).toUpperCase());
 function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2600)}
 function media(p,cls=""){if(!p)return"";return p.v?`<video src="${blob(p.id)}" muted playsinline preload="metadata" class="${cls}"></video>`:`<img src="${blob(p.id)}" alt="" loading="lazy" class="${cls}">`}
 function firstPhoto(x){return (x.photos||[])[0]}
+function embedSrc(link){if(!link)return"";let m=link.match(/instagram\.com\/(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/);if(m)return `https://www.instagram.com/p/${m[1]}/embed/`;
+  m=link.match(/facebook\.com\/(?:reel\/|watch\/?\?v=)(\d+)/);if(m)return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent("https://www.facebook.com/reel/"+m[1])}&show_text=false&width=340`;return""}
+function fitEmbeds(){document.querySelectorAll(".ph.emb").forEach(e=>{const w=e.clientWidth;if(w)e.style.setProperty("--s",(w/340).toFixed(3))})}
+addEventListener("resize",()=>fitEmbeds());
 function tagsOf(x){return String(x.tags||"").split(",").map(s=>s.trim()).filter(Boolean)}
 function title(col,x){return x.title||x.name||"Untitled"}
 
@@ -477,7 +484,7 @@ function route(){const v=(location.hash||"#home").slice(1);const name=VIEWS[v]?v
   document.querySelectorAll("nav.tabs a").forEach(a=>{if(a.dataset.tab===name)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   S.view=name;render()}
 function render(){const el=$("#view");if(!S.ready&&S.db!==null){el.innerHTML=statusBanner()+`<div class="empty"><b>Opening your sewing book…</b>Loading your makes, patterns and stash.</div>`;return}
-  el.innerHTML=statusBanner()+VIEWS[S.view]()}
+  el.innerHTML=statusBanner()+VIEWS[S.view]();requestAnimationFrame(fitEmbeds)}
 function statusBanner(){
   if(S.db===null)return `<div class="banner" style="margin-bottom:14px">This browser isn't letting the Sewing Book save anything. Open it from your home screen, and make sure Private Browsing is off.</div>`;
   if(S.slow)return `<div class="banner" style="margin-bottom:14px">Can't reach your saved data yet. Check your connection; it will load by itself.</div>`;
@@ -528,6 +535,8 @@ function card(col,x){const p=firstPhoto(x);let sub="";
   if(col==="patterns")sub=[x.designer,x.status==="Wishlist"?"Wishlist":""].filter(Boolean).join(" · ");
   if(col==="patterns"&&!p&&x.tlSlug){const t=S.tl.find(z=>z.s===x.tlSlug);const st=t&&tlThumb(t);if(st)return `<button class="card" data-act="open" data-col="patterns" data-id="${x.id}"><div class="ph tlph" style="${st}"></div><div class="body"><div class="t">${esc(title(col,x))}</div><div class="s">${esc(sub)}</div></div></button>`}
   if(col==="fabrics")sub=[x.fabricType,x.length].filter(Boolean).join(" · ");
+  const es=!p&&col==="inspo"&&embedSrc(x.link);
+  if(es)return `<button class="card" data-act="open" data-col="${col}" data-id="${x.id}"><div class="ph emb"><iframe src="${esc(es)}" loading="lazy" scrolling="no" tabindex="-1" title="" aria-hidden="true"></iframe></div><div class="body"><div class="t">${esc(title(col,x))}</div>${sub?`<div class="s">${esc(sub)}</div>`:""}</div></button>`;
   return `<button class="card" data-act="open" data-col="${col}" data-id="${x.id}"><div class="ph">${p?media(p):(x.link?"↗":ph(title(col,x)))}</div>
   <div class="body"><div class="t">${esc(title(col,x))}</div>${sub?`<div class="s">${esc(sub)}</div>`:""}</div></button>`}
 
@@ -649,6 +658,7 @@ function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
   if(col==="inspo"&&x.link)extra+=`<div><a class="btn" href="${esc(x.link)}" target="_blank" rel="noopener">Open original ↗</a></div>`;
   openSheet(`<div class="bar"><h2>${esc(title(col,x))}</h2><button class="btn small" data-act="close">Close</button></div>
   <div class="stack" style="gap:18px">
+  ${!photos.length&&embedSrc(x.link)?`<iframe class="embfull" src="${esc(embedSrc(x.link))}" loading="lazy" allowfullscreen title="Original post"></iframe>`:""}
   ${photos.length?`<div class="gallery">${photos.map(p=>p.v?`<video src="${blob(p.id)}" controls playsinline preload="metadata"></video>`:`<img src="${blob(p.id)}" alt="">`).join("")}</div>`:""}
   ${col==="makes"?`<div><span class="pill" style="--c:var(${STCOL[x.status]||"--st-idea"})">${esc(x.status||"Idea")}</span></div>`:col==="alterations"?`<div><span class="pill" style="--c:var(${ALTCOL[x.status]||"--st-idea"})">${esc(x.status||"To do")}</span></div>`:""}
   ${col==="fitting"?"":stepsHTML}
