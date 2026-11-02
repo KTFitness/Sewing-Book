@@ -29,7 +29,7 @@
    "id": "brother-nv880e"
   }
  ],
- "makes": [
+ "alterations": [
   {
    "costs": [],
    "createdAt": 1793529037821,
@@ -42,10 +42,11 @@
    ],
    "rating": 0,
    "settings": [],
-   "status": "Cutting",
+   "status": "In progress",
    "title": "Altering Anthropologie Maeve Halter Scarf Bubble Hem in red stripe",
    "updatedAt": 1793529133307,
    "id": "mvxovqilpsnemr"
   }
- ]
+ ],
+ "makes": []
 }

@@ -130,8 +130,8 @@ h1{font-size:26px} h2{font-size:20px} h3{font-size:17px}
 /* bottom nav */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-nav.tabs .in{display:grid;grid-template-columns:repeat(6,1fr);max-width:900px;margin:0 auto}
-nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 9px;text-decoration:none;color:var(--muted);font-size:11px;font-weight:600}
+nav.tabs .in{display:grid;grid-template-columns:repeat(7,1fr);max-width:900px;margin:0 auto}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 9px;text-decoration:none;color:var(--muted);font-size:10.5px;font-weight:600;min-width:0;white-space:nowrap}
 nav.tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 nav.tabs a[aria-current="page"]{color:var(--mat)}
 
@@ -165,6 +165,14 @@ form textarea{min-height:84px;resize:vertical}
 .check input{width:20px;height:20px;accent-color:var(--mat)}
 .check.done span{text-decoration:line-through;color:var(--muted)}
 .meas{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.tile{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 12px;cursor:pointer;min-height:64px}
+.tile .tn{font-weight:600;line-height:1.25;min-width:0;overflow-wrap:anywhere}
+.tile .tc{font-family:var(--mono);font-size:13px;color:var(--mat);background:var(--mat-soft);border-radius:999px;padding:1px 8px;flex:none}
+.tile.zero .tc{color:var(--muted);background:var(--sunk)}
+.tile.zero .tn{color:var(--muted);font-weight:500}
+ol.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+ol.steps li{padding-left:4px;line-height:1.45}
 .bars{display:flex;flex-direction:column;gap:7px}
 .bar{display:grid;grid-template-columns:minmax(0,42%) 1fr 2.5em;gap:10px;align-items:center;font-size:13px}
 .bar span{overflow-wrap:anywhere}
@@ -198,6 +206,7 @@ form textarea{min-height:84px;resize:vertical}
   <a href="#home" data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>Home</a>
   <a href="#makes" data-tab="makes"><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8 16L19 4M16 16L5 4"/></svg>Makes</a>
   <a href="#inspo" data-tab="inspo"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-6-6-9 9"/></svg>Inspo</a>
+  <a href="#tips" data-tab="tips"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>Tips</a>
   <a href="#patterns" data-tab="patterns"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12l3 3 4-6" stroke-dasharray="2 2"/></svg>Patterns</a>
   <a href="#stash" data-tab="stash"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4z"/><path d="M3 12l9 4 9-4M3 16l9 4 9-4"/></svg>Stash</a>
   <a href="#more" data-tab="more"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>More</a>
@@ -212,7 +221,12 @@ const FABRICS=["Single jersey","Interlock","Rib knit","Ponte","French terry","Sw
  "Cotton lawn","Cotton poplin","Voile","Chambray","Shirting","Denim","Stretch denim","Linen","Linen blend","Viscose / rayon challis","Crepe","Silk","Satin","Chiffon / georgette","Twill","Gabardine","Wool suiting","Wool coating","Corduroy","Canvas","Tencel / lyocell","Broderie anglaise","Lace","Faux leather"];
 const STATUSES=["Idea","Planned","Cutting","Sewing","Finished","Abandoned"];
 const STCOL={Idea:"--st-idea",Planned:"--st-plan",Cutting:"--st-sew",Sewing:"--st-sew",Finished:"--st-done",Abandoned:"--st-off"};
-const KINDS=["Inspiration","Tip","Technique","Pattern idea","Make idea"];
+const KINDS=["Inspiration","Pattern idea","Make idea","Alteration idea"];
+const ALT_STATUSES=["To do","Planned","In progress","Done","Gave up"];
+const ALTCOL={"To do":"--st-idea",Planned:"--st-plan","In progress":"--st-sew",Done:"--st-done","Gave up":"--st-off"};
+const TIP_CATS=["Hems","Waistbands","Corners & points","Seams & seam finishes","Necklines & facings","Binding & bias","Collars","Zips","Buttons & buttonholes","Pockets","Sleeves & cuffs","Darts, pleats & gathers","Plackets & vents","Linings","Interfacing","Knits & stretch","Pressing","Cutting & marking","Embroidery","Other"];
+const BODY_AREAS=["Neck & neckline","Shoulders","Upper chest","Bust","Back","Armhole & underarm","Sleeves & arms","Waist","Tummy","Hips","Seat","Crotch & rise","Thighs","Knees & calves","Length & proportion","Overall"];
+const FIT_GARMENTS=["All garments","Tops & blouses","Shirts","Knit tops & tees","Dresses","Skirts","Pants & shorts","Jeans","Jackets & coats","Jumpsuits","Swim & lingerie"];
 const MKINDS=["Sewing machine","Overlocker","Coverstitch","Embroidery","Other"];
 const NOTION_CATS=["Zip","Elastic","Interfacing","Buttons","Snaps / hardware","Thread","Bias binding","Tape / stay tape","Trim / lace","Needles","Other"];
 const MEAS=["Height","High bust","Full bust","Under bust","Waist","High hip","Full hip","Nape to waist","Shoulder width","Across back","Arm length","Bicep","Wrist","Inseam","Outseam","Crotch depth (rise)","Thigh","Knee","Calf","Neck"];
@@ -304,6 +318,64 @@ const SCHEMA={
   {k:"cost",l:"Cost each (or per metre)",t:"text",ph:"e.g. $3.50"},
   {k:"photos",l:"Photo",t:"photos"},
   {k:"notes",l:"Notes",t:"textarea"}],
+ alterations:[
+  {k:"title",l:"What are you altering?",t:"text",req:1,ph:"e.g. Shorten and taper navy wool trousers"},
+  {k:"status",l:"Status",t:"select",o:ALT_STATUSES},
+  {k:"garment",l:"Garment type",t:"datalist",o:GARMENTS},
+  {k:"source",l:"Where it came from",t:"text",ph:"e.g. Depop, op shop, my wardrobe"},
+  {k:"brand",l:"Brand",t:"text"},
+  {k:"sizeOrig",l:"Size on the label",t:"text"},
+  {h:"What's wrong and the fix"},
+  {k:"problem",l:"What's wrong with it",t:"textarea",ph:"e.g. Too wide at the hip, hem too long"},
+  {k:"altTypes",l:"Alterations needed",t:"text",ph:"comma separated, e.g. take in side seams, shorten hem"},
+  {k:"plan",l:"Plan",t:"textarea",ph:"Order of work, what to unpick first"},
+  {k:"measurements",l:"Measurements before and after",t:"textarea",ph:"e.g. Hip 104 → 98 cm"},
+  {h:"Fabric"},
+  {k:"fabricType",l:"Fabric type",t:"datalist",o:FABRICS},
+  {k:"fibre",l:"Fibre content",t:"text"},
+  {k:"stretch",l:"Stretch",t:"text"},
+  {k:"_lookup",t:"lookup"},
+  {h:"Machine settings"},
+  {k:"settings",t:"settings"},
+  {h:"Notions used"},
+  {k:"notions",t:"notions"},
+  {h:"Notes"},
+  {k:"construction",l:"How I did it",t:"textarea"},
+  {k:"nextTime",l:"Next time I would…",t:"textarea"},
+  {k:"rating",l:"How happy are you with it?",t:"rating"},
+  {k:"started",l:"Started",t:"date"},{k:"finished",l:"Finished",t:"date"},
+  {h:"Cost"},
+  {k:"costs",t:"costs"},
+  {k:"photos",l:"Before and after photos",t:"photos"},
+  {k:"tags",l:"Tags",t:"text",ph:"comma separated"}],
+ tips:[
+  {k:"title",l:"Tip",t:"text",req:1,ph:"e.g. Mitred corner on a double-fold hem"},
+  {k:"category",l:"Category",t:"select",o:TIP_CATS},
+  {k:"photos",l:"Photos, screenshots or video",t:"photos",video:1},
+  {k:"link",l:"Link (YouTube, Instagram, TikTok, blog)",t:"url"},
+  {k:"source",l:"Who it's from",t:"text",ph:"e.g. Closet Core blog, Sewing Bee"},
+  {k:"steps",l:"How to do it",t:"textarea",ph:"One step per line"},
+  {k:"garment",l:"Best for (garment)",t:"datalist",o:GARMENTS},
+  {k:"fabricType",l:"Best for (fabric)",t:"datalist",o:FABRICS},
+  {h:"Machine settings"},
+  {k:"settings",t:"settings"},
+  {k:"notes",l:"My notes",t:"textarea",ph:"What worked, what to watch out for"},
+  {k:"rating",l:"How useful is it?",t:"rating"},
+  {k:"tags",l:"Tags",t:"text",ph:"comma separated"}],
+ fitting:[
+  {k:"title",l:"Fit issue",t:"text",req:1,ph:"e.g. Gaping at the back neck"},
+  {k:"area",l:"Body area",t:"select",o:BODY_AREAS},
+  {k:"garmentGroup",l:"Garment type",t:"select",o:FIT_GARMENTS},
+  {k:"symptom",l:"What you see",t:"textarea",ph:"e.g. Drag lines from bust point to side seam"},
+  {k:"cause",l:"Why it happens",t:"textarea"},
+  {k:"fix",l:"Pattern adjustment",t:"textarea",ph:"One step per line"},
+  {k:"garmentFix",l:"Fixing a finished garment",t:"textarea",ph:"One step per line"},
+  {k:"photos",l:"Photos (before, after, the pattern piece)",t:"photos",video:1},
+  {k:"link",l:"Link",t:"url"},
+  {k:"source",l:"Who it's from",t:"text"},
+  {k:"worked",l:"Has it worked for me?",t:"select",o:["","Yes","Partly","No","Not tried yet"]},
+  {k:"notes",l:"My notes",t:"textarea"},
+  {k:"tags",l:"Tags",t:"text",ph:"comma separated"}],
  machines:[
   {k:"name",l:"Machine",t:"text",req:1},
   {k:"kind",l:"Kind",t:"select",o:MKINDS},
@@ -313,7 +385,7 @@ const SCHEMA={
   {k:"notes",l:"Notes",t:"textarea"},
   {k:"photos",l:"Photo",t:"photos"}]
 };
-const SINGULAR={makes:"make",inspo:"inspo",patterns:"pattern",fabrics:"fabric",machines:"machine",notions:"notion"};
+const SINGULAR={alterations:"alteration",tips:"sewing tip",fitting:"fitting note",makes:"make",inspo:"inspo",patterns:"pattern",fabrics:"fabric",machines:"machine",notions:"notion"};
 const AUTOKEYS={patterns:["name","designer","garment","format","sizeRange","suggested","yardage","link"],fabrics:["name","fabricType","fibre","colour","width","weight","stretch","bought"]};
 const money=v=>{const n=parseFloat(String(v??"").replace(/[^0-9.\-]/g,""));return isFinite(n)?n:0};
 const aud=n=>"$"+n.toFixed(2).replace(/\.00$/,"");
@@ -341,7 +413,7 @@ async function resolvePat(label){label=String(label||"").trim();if(!label)return
 const costTotal=m=>(m.costs||[]).reduce((t,c)=>t+money(c.amount),0)||money(m.cost);
 const SET_FIELDS=[["usedFor","Used for","e.g. Side seams, hems"],["needle","Needle","e.g. Jersey 80/12"],["thread","Thread",""],["stitch","Stitch",""],["length","Length",""],["width","Width",""],["tension","Tension",""],["diff","Diff. feed",""],["foot","Foot",""],["notes","Notes",""]];
 
-const S={makes:[],inspo:[],patterns:[],fabrics:[],machines:[],notions:[],tl:[],tlMeta:null,show:{},settings:{},ready:false,db:null,assets:null,downloads:null,filters:{}};
+const S={alterations:[],tips:[],fitting:[],makes:[],inspo:[],patterns:[],fabrics:[],machines:[],notions:[],tl:[],tlMeta:null,show:{},settings:{},ready:false,db:null,assets:null,downloads:null,filters:{}};
 const $=(s,el=document)=>el.querySelector(s);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm=v=>String(v||"").trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
@@ -359,9 +431,9 @@ function title(col,x){return x.title||x.name||"Untitled"}
 /* ---------- cross reference ---------- */
 function pastFor(fabricType,garment,excludeId){
   const f=norm(fabricType),g=norm(garment);if(!f&&!g)return[];
-  return S.makes.filter(m=>m.id!==excludeId).map(m=>{let s=0;
+  return [...S.makes.map(m=>({...m,_col:"makes"})),...S.alterations.map(m=>({...m,_col:"alterations"}))].filter(m=>m.id!==excludeId).map(m=>{let s=0;
     if(f&&norm(m.fabricType)===f)s+=3;else if(f&&norm(m.fabricType)&&(norm(m.fabricType).includes(f)||f.includes(norm(m.fabricType))))s+=2;
-    if(g&&norm(m.garment)===g)s+=2; if(s&&(m.settings||[]).length)s+=1; if(m.status==="Finished")s+=.5;
+    if(g&&norm(m.garment)===g)s+=2; if(s&&(m.settings||[]).length)s+=1; if(m.status==="Finished"||m.status==="Done")s+=.5;
     return {m,s}}).filter(x=>x.s>=2).sort((a,b)=>b.s-a.s||(b.m.updatedAt||0)-(a.m.updatedAt||0)).map(x=>x.m);
 }
 function dial(st){
@@ -374,13 +446,32 @@ function pastBlock(list,opts={}){
   if(!list.length)return `<div class="muted">${opts.emptyMsg||"Nothing logged yet that matches."}</div>`;
   return list.slice(0,opts.max||5).map(m=>{const p=m.patternId&&byId("patterns",m.patternId);
     return `<div class="stack" style="gap:8px"><div class="row between"><div><b>${esc(m.title)}</b><div class="muted" style="font-size:13px">${esc([m.fabricType,m.fibre,m.weight,p&&p.name].filter(Boolean).join(" · "))}</div></div>
-    <div class="row">${opts.copy?`<button type="button" class="btn small" data-act="copyset" data-id="${m.id}">Copy settings</button>`:`<button type="button" class="btn small" data-act="open" data-col="makes" data-id="${m.id}">Open</button>`}</div></div>
+    <div class="row">${opts.copy?`<button type="button" class="btn small" data-act="copyset" data-id="${m.id}">Copy settings</button>`:`<button type="button" class="btn small" data-act="open" data-col="${m._col||"makes"}" data-id="${m.id}">Open</button>`}</div></div>
     ${(m.settings||[]).map(dial).join("")||`<div class="muted" style="font-size:13px">No machine settings recorded.</div>`}
     ${m.nextTime?`<div style="font-size:13px"><span class="eyebrow">Next time</span><br>${esc(m.nextTime)}</div>`:""}</div>`}).join(`<hr style="border:0;border-top:1px dashed var(--line);width:100%">`);
 }
 
 /* ---------- views ---------- */
-const VIEWS={home,makes:()=>listView("makes"),inspo:()=>listView("inspo"),patterns:()=>listView("patterns"),stash,more};
+const VIEWS={home,tips,makes:()=>{const seg=S.filters.mseg||"makes";return `<div class="stack"><div class="seg" role="group" aria-label="Makes or alterations">${[["makes","Makes"],["alterations","Alterations"]].map(([k,l])=>`<button data-act="mseg" data-v="${k}" aria-pressed="${seg===k}">${l}</button>`).join("")}</div>${listView(seg)}</div>`},inspo:()=>listView("inspo"),patterns:()=>listView("patterns"),stash,more};
+function tips(){const seg=S.filters.tseg||"tips";return `<div class="stack"><div class="seg" role="group" aria-label="Tips section">${[["tips","Sewing tips"],["fitting","Fitting"]].map(([k,l])=>`<button data-act="tseg" data-v="${k}" aria-pressed="${seg===k}">${l}</button>`).join("")}</div>${seg==="tips"?groupView("tips","category",TIP_CATS):groupView("fitting","area",BODY_AREAS)}</div>`}
+function groupView(col,key,groups){const sel=S.filters[col+"Grp"]||"";const q=norm(S.filters[col+"Q"]);const gF=col==="fitting"?(S.filters.fitG||""):"";
+  let items=[...S[col]].sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  if(gF)items=items.filter(x=>!x.garmentGroup||x.garmentGroup==="All garments"||x.garmentGroup===gF);
+  const counts={};items.forEach(x=>{const k=x[key]||groups[groups.length-1];counts[k]=(counts[k]||0)+1});
+  const h=col==="tips"?"Sewing tips":"Fitting";
+  const intro=col==="tips"?"Techniques sorted by job. Save the video, screenshot or link, then write the steps your way.":"Fit fixes sorted by body area. Pick a garment type to narrow it down.";
+  let body;
+  if(!sel&&!q){body=`<div class="tiles">${groups.map(g=>`<button class="tile${counts[g]?"":" zero"}" data-act="grp" data-col="${col}" data-v="${esc(g)}"><span class="tn">${esc(g)}</span><span class="tc">${counts[g]||0}</span></button>`).join("")}</div>`}
+  else{if(sel)items=items.filter(x=>(x[key]||groups[groups.length-1])===sel);
+    if(q){const words=q.split(/\s+/).filter(Boolean);items=items.filter(x=>{const hay=norm([x.title,x.category,x.area,x.garmentGroup,x.garment,x.fabricType,x.source,x.steps,x.symptom,x.cause,x.fix,x.garmentFix,x.notes,x.tags].join(" "));return words.every(w=>hay.includes(w))})}
+    body=`<div class="row"><button class="chip" data-act="grp" data-col="${col}" data-v="">← All ${col==="tips"?"categories":"body areas"}</button>${sel?`<b style="font-size:15px">${esc(sel)}</b>`:""}</div>
+    ${items.length?`<div class="list">${items.map(x=>li(col,x)).join("")}</div>`:`<div class="empty"><b>Nothing here yet</b>${sel?`Add your first ${col==="tips"?"tip":"fitting note"} for ${esc(sel.toLowerCase())}.`:"No matches."}<div style="margin-top:10px"><button class="btn primary" data-act="new" data-col="${col}" data-k="${key}" data-v="${esc(sel)}">+ Add</button></div></div>`}`}
+  return `<div class="stack">
+  <div class="row between"><h1>${h}</h1><button class="btn primary small" data-act="new" data-col="${col}" data-k="${key}" data-v="${esc(sel)}">+ New</button></div>
+  <p class="muted" style="margin:0">${intro}</p>
+  <input class="search" id="q-${col}" type="search" placeholder="Search ${h.toLowerCase()}" value="${esc(S.filters[col+"Q"]||"")}" data-q="${col}">
+  ${col==="fitting"?`<div class="chips">${FIT_GARMENTS.map(g=>`<button class="chip" aria-pressed="${(g==="All garments"?"":g)===gF}" data-act="fitg" data-v="${esc(g==="All garments"?"":g)}">${esc(g)}</button>`).join("")}</div>`:""}
+  ${body}</div>`}
 function stash(){const seg=S.filters.seg||"fabrics";return `<div class="stack"><div class="seg" role="group" aria-label="Stash section">${[["fabrics","Fabric"],["notions","Notions"]].map(([k,l])=>`<button data-act="seg" data-v="${k}" aria-pressed="${seg===k}">${l}</button>`).join("")}</div>${listView(seg)}</div>`}
 function route(){const v=(location.hash||"#home").slice(1);const name=VIEWS[v]?v:"home";
   document.querySelectorAll("nav.tabs a").forEach(a=>{if(a.dataset.tab===name)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
@@ -395,7 +486,7 @@ function statusBanner(){
 function home(){
   const g=S.filters.lkG||"",f=S.filters.lkF||"";
   const res=pastFor(f,g);
-  const active=S.makes.filter(m=>["Planned","Cutting","Sewing"].includes(m.status)).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  const active=[...S.makes.filter(m=>["Planned","Cutting","Sewing"].includes(m.status)).map(m=>["makes",m]),...S.alterations.filter(m=>["Planned","In progress"].includes(m.status)).map(m=>["alterations",m])].sort((a,b)=>(b[1].updatedAt||0)-(a[1].updatedAt||0));
   const recent=[...S.inspo].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,6);
   const fin=S.makes.filter(m=>m.status==="Finished").length;
   return `<div class="stack" style="gap:20px">
@@ -409,13 +500,13 @@ function home(){
     <div id="lkRes" class="stack">${f||g?pastBlock(res,{max:6,emptyMsg:`No makes logged yet with ${esc(f||g)}. Once you log one, its settings will show here.`}):""}</div>
   </section>
   <section class="stack"><div class="row between"><h2>On the table</h2><a href="#makes" class="btn small">All makes</a></div>
-    ${active.length?`<div class="list">${active.map(m=>li("makes",m)).join("")}</div>`:`<div class="empty"><b>Nothing in progress</b>Start a make and it will sit here until it's finished.<div style="margin-top:10px"><button class="btn primary" data-act="new" data-col="makes">Start a make</button></div></div>`}
+    ${active.length?`<div class="list">${active.map(([c,m])=>li(c,m)).join("")}</div>`:`<div class="empty"><b>Nothing in progress</b>Start a make and it will sit here until it's finished.<div style="margin-top:10px"><button class="btn primary" data-act="new" data-col="makes">Start a make</button></div></div>`}
   </section>
   <section class="stack"><div class="row between"><h2>Latest inspo</h2><a href="#inspo" class="btn small">Inspo board</a></div>
     ${recent.length?`<div class="grid-cards">${recent.map(x=>card("inspo",x)).join("")}</div>`:`<div class="empty"><b>Your inspo board is empty</b>Save screenshots, photos, video tips and links.<div style="margin-top:10px"><button class="btn primary" data-act="new" data-col="inspo">Add inspo</button></div></div>`}
   </section>
   <section class="panel"><div class="row" style="gap:22px">
-    ${[["Makes finished",fin],["Patterns",allPatterns().filter(p=>p.status!=="Wishlist").length],["Wishlist",allPatterns().filter(p=>p.status==="Wishlist").length],["Fabrics in stash",S.fabrics.filter(x=>x.archived!=="Yes").length]].map(([l,n])=>`<div><div style="font-family:var(--mono);font-size:22px">${n}</div><div class="eyebrow">${l}</div></div>`).join("")}
+    ${[["Makes finished",fin],["Alterations done",S.alterations.filter(m=>m.status==="Done").length],["Patterns",allPatterns().filter(p=>p.status!=="Wishlist").length],["Wishlist",allPatterns().filter(p=>p.status==="Wishlist").length],["Fabrics in stash",S.fabrics.filter(x=>x.archived!=="Yes").length]].map(([l,n])=>`<div><div style="font-family:var(--mono);font-size:22px">${n}</div><div class="eyebrow">${l}</div></div>`).join("")}
   </div></section></div>`;
 }
 function li(col,x){const p=firstPhoto(x);let sub="";
@@ -424,9 +515,12 @@ function li(col,x){const p=firstPhoto(x);let sub="";
   if(x.tl)return `<button class="li" data-act="opentl" data-id="${esc(x.s)}"><span class="th" style="font-size:11px;font-family:var(--body);font-weight:700;color:var(--mat)">TL</span><span class="tx"><div class="t">${esc(x.name)}</div><div class="s">${esc(sub)}</div></span></button>`;
   if(col==="fabrics")sub=[x.fabricType,x.length,x.colour].filter(Boolean).join(" · ");
   if(col==="machines")sub=x.kind||"";
+  if(col==="alterations")sub=[x.garment,x.altTypes,x.source].filter(Boolean).join(" · ");
+  if(col==="tips")sub=[x.category,x.source,x.garment].filter(Boolean).join(" · ");
+  if(col==="fitting")sub=[x.area,x.garmentGroup&&x.garmentGroup!=="All garments"?x.garmentGroup:"",x.worked?"Worked: "+x.worked:""].filter(Boolean).join(" · ");
   if(col==="notions")sub=[x.category,x.size,x.colour,x.quantity&&("qty "+x.quantity)].filter(Boolean).join(" · ");
   return `<button class="li" data-act="open" data-col="${col}" data-id="${x.id}"><span class="th">${p&&!p.v?media(p):ph(title(col,x))}</span>
-  <span class="tx"><div class="t">${esc(title(col,x))}</div><div class="s">${esc(sub)}</div></span>${col==="makes"?`<span class="pill" style="--c:var(${STCOL[x.status]||"--st-idea"})">${esc(x.status||"Idea")}</span>`:""}</button>`}
+  <span class="tx"><div class="t">${esc(title(col,x))}</div><div class="s">${esc(sub)}</div></span>${col==="makes"?`<span class="pill" style="--c:var(${STCOL[x.status]||"--st-idea"})">${esc(x.status||"Idea")}</span>`:col==="alterations"?`<span class="pill" style="--c:var(${ALTCOL[x.status]||"--st-idea"})">${esc(x.status||"To do")}</span>`:""}</button>`}
 function card(col,x){const p=firstPhoto(x);let sub="";
   if(x.tl)return `<button class="card" data-act="opentl" data-id="${esc(x.s)}"><div class="ph tlph" style="${x.thumb}">${x.thumb?"":ph(x.name)}</div><div class="body"><div class="t">${esc(x.name)}</div><div class="s">${esc([x.designer,x.status==="Wishlist"?"Wishlist":"",x.free?"Free":""].filter(Boolean).join(" · "))}</div></div></button>`;
   if(col==="inspo")sub=[x.kind,x.garment,x.fabricType].filter(Boolean).join(" · ");
@@ -438,6 +532,7 @@ function card(col,x){const p=firstPhoto(x);let sub="";
   <div class="body"><div class="t">${esc(title(col,x))}</div>${sub?`<div class="s">${esc(sub)}</div>`:""}</div></button>`}
 
 const LISTCONF={
+ alterations:{h:"Alterations",chips:["All",...ALT_STATUSES],chipKey:"status",def:"To do",layout:"list",empty:"Log each alteration with the before and after, what you changed, and the machine settings you used."},
  makes:{h:"Makes",chips:["All",...STATUSES],chipKey:"status",layout:"list",empty:"Log each garment with its fabric, needles and settings so the next one is easier."},
  inspo:{h:"Inspo board",chips:["All",...KINDS],chipKey:"kind",layout:"masonry",empty:"Screenshots, photos, video tips and links all live here. Tag them by garment and fabric so they turn up later."},
  patterns:{h:"Patterns",chips:["All","Owned","Wishlist","Free","Made","Self-drafted","Traced / adapted"],chipKey:"status",layout:"grid",empty:"Add the patterns you own, or paste a list from Threadloop to bring them in at once."},
@@ -449,10 +544,10 @@ function listView(col){const c=LISTCONF[col];const chip=S.filters[col+"Chip"]||c
   if(col==="fabrics"){if(chip==="In stash")items=items.filter(x=>x.archived!=="Yes");else if(chip==="Used up")items=items.filter(x=>x.archived==="Yes")}
   else if(col==="patterns"&&chip==="Free")items=items.filter(x=>x.free||/(^|,)\s*free\s*(,|$)/i.test(x.tags||""));
   else if(col==="patterns"&&chip==="Made"){const made=new Set(S.makes.map(m=>m.patternId));items=items.filter(x=>made.has(x.id))}
-  else if(chip!=="All")items=items.filter(x=>(x[c.chipKey]||(col==="makes"?"Idea":""))===chip);
+  else if(chip!=="All")items=items.filter(x=>(x[c.chipKey]||c.def||(col==="makes"?"Idea":""))===chip);
   const gF=S.filters[col+"G"]||"";if(gF)items=items.filter(x=>norm(x.garment)===norm(gF));
   const fF=col==="patterns"?S.filters.patFab||"":"";if(fF)items=items.filter(x=>{const tg=x.fab||((x.tlSlug&&(S.tl.find(z=>z.s===x.tlSlug)||{}).tg)||{}).f||[];return tg.includes(fF)||norm(x.suggested).includes(norm(fF))});
-  if(q){const words=q.split(/\s+/).filter(Boolean);items=items.filter(x=>{const tlx=x.tlSlug&&S.tl.find(z=>z.s===x.tlSlug);const hay=norm([x.name,x.title,x.designer,x.garment,x.types,x.fabricType,x.notes,x.tags,x.kind,x.category,x.colour,x.fibre,x.suggested,x.tltags,tlx&&tlx.tagText].join(" "));return words.every(w=>hay.includes(w))})}
+  if(q){const words=q.split(/\s+/).filter(Boolean);items=items.filter(x=>{const tlx=x.tlSlug&&S.tl.find(z=>z.s===x.tlSlug);const hay=norm([x.name,x.title,x.designer,x.garment,x.types,x.fabricType,x.notes,x.tags,x.kind,x.category,x.colour,x.fibre,x.suggested,x.tltags,tlx&&tlx.tagText,x.source,x.brand,x.problem,x.altTypes,x.plan,x.construction].join(" "));return words.every(w=>hay.includes(w))})}
   const total=items.length;const lim=S.show[col]||60;items=items.slice(0,lim);
   const more=total>lim?`<div style="text-align:center"><button class="btn" data-act="more" data-col="${col}">Show more (${total-lim} left)</button></div>`:"";
   const empty=col==="patterns"?!S.patterns.length&&!S.tl.length:!S[col].length;
@@ -517,7 +612,8 @@ function openSheet(html){$("#pane").innerHTML=html;$("#sheet").hidden=false;$("#
 function closeSheet(){$("#sheet").hidden=true;$("#pane").innerHTML="";document.body.style.overflow="";S.form=null}
 
 function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
-  const rows=sch.filter(f=>f.k&&!["photos","settings","_lookup","_auto","notions","costs","title","name"].includes(f.k)&&x[f.k]).map(f=>{let v=x[f.k];
+  const stepKeys=["steps","fix","garmentFix"];
+  const rows=sch.filter(f=>f.k&&!["photos","settings","_lookup","_auto","notions","costs","title","name",...stepKeys].includes(f.k)&&x[f.k]).map(f=>{let v=x[f.k];
     if(f.t==="ref"||f.t==="patpick"){const rc=f.ref||"patterns";const r=byId(rc,v);if(!r)return"";v=`<a href="#" data-act="open" data-col="${rc}" data-id="${r.id}">${esc(title(rc,r))}</a>`}
     else if(f.t==="url")v=`<a href="${esc(v)}" target="_blank" rel="noopener">${esc(v.replace(/^https?:\/\/(www\.)?/,"").slice(0,48))}</a>`;
     else if(f.t==="rating")v=`<span style="font-family:var(--mono)">${"●".repeat(v)}${"○".repeat(5-v)}</span>`;
@@ -527,7 +623,10 @@ function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
   let extra="";
   if(col==="patterns"&&x.tlSlug){const t=S.tl.find(z=>z.s===x.tlSlug);if(t&&t.tg){const g={};t.tg.d.forEach(([l,gr])=>(g[gr]=g[gr]||[]).push(l));extra+=`<div class="stack" style="gap:6px"><h3>From Threadloop</h3><dl class="kv">${t.tg.f.length?`<dt>Fabric</dt><dd>${esc(t.tg.f.join(", "))}</dd>`:""}${t.tg.t.length?`<dt>Pattern types</dt><dd>${esc(t.tg.t.join(", "))}</dd>`:""}${Object.entries(g).map(([gr,ls])=>`<dt>${esc(gr)}</dt><dd>${esc(ls.join(", "))}</dd>`).join("")}</dl></div>`}}
   if(col==="patterns"&&!photos.length&&x.tlSlug){const t=S.tl.find(z=>z.s===x.tlSlug);const st=t&&tlThumb(t);if(st)extra+=`<div class="tlbig" style="${st}"></div>`}
-  if(col==="makes"){extra+=`<div class="stack"><h3>Machine settings</h3>${(x.settings||[]).map(dial).join("")||`<div class="muted">None recorded.</div>`}</div>`;
+  stepKeys.forEach(k=>{if(!x[k])return;const f=sch.find(z=>z.k===k);if(!f)return;const lines=String(x[k]).split(/\n+/).map(t=>t.replace(/^\s*(\d+[.)]|[-•*])\s*/,"").trim()).filter(Boolean);
+    extra+=`<div class="stack" style="gap:8px"><h3>${esc(f.l)}</h3>${lines.length>1?`<ol class="steps">${lines.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`:`<p style="margin:0;white-space:pre-wrap">${esc(x[k])}</p>`}</div>`});
+  if((col==="tips")&&(x.settings||[]).length)extra+=`<div class="stack"><h3>Machine settings</h3>${x.settings.map(dial).join("")}</div>`;
+  if(col==="makes"||col==="alterations"){extra+=`<div class="stack"><h3>Machine settings</h3>${(x.settings||[]).map(dial).join("")||`<div class="muted">None recorded.</div>`}</div>`;
     const nl=(x.notions||[]).map(r=>{const n=byId("notions",r.notionId);return n?`<button class="li" data-act="open" data-col="notions" data-id="${n.id}"><span class="tx"><div class="t">${esc(n.name)}</div><div class="s">${esc([n.category,r.qty&&("used "+r.qty)].filter(Boolean).join(" · "))}</div></span></button>`:""}).join("");
     if(nl)extra+=`<div class="stack"><h3>Notions used</h3><div class="list">${nl}</div></div>`;
     if((x.costs||[]).length||x.cost)extra+=`<div class="stack" style="gap:6px"><h3>Cost</h3><div class="costtable">${(x.costs||[]).map(c=>`<span>${esc(c.item||"Item")}</span><span class="amt">${aud(money(c.amount))}</span>`).join("")}${!(x.costs||[]).length&&x.cost?`<span>Total (noted)</span><span class="amt">${esc(x.cost)}</span>`:`<span class="tot">Total</span><span class="amt tot">${aud(costTotal(x))}</span>`}</div></div>`;
@@ -551,7 +650,7 @@ function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
   openSheet(`<div class="bar"><h2>${esc(title(col,x))}</h2><button class="btn small" data-act="close">Close</button></div>
   <div class="stack" style="gap:18px">
   ${photos.length?`<div class="gallery">${photos.map(p=>p.v?`<video src="${blob(p.id)}" controls playsinline preload="metadata"></video>`:`<img src="${blob(p.id)}" alt="">`).join("")}</div>`:""}
-  ${col==="makes"?`<div><span class="pill" style="--c:var(${STCOL[x.status]||"--st-idea"})">${esc(x.status||"Idea")}</span></div>`:""}
+  ${col==="makes"?`<div><span class="pill" style="--c:var(${STCOL[x.status]||"--st-idea"})">${esc(x.status||"Idea")}</span></div>`:col==="alterations"?`<div><span class="pill" style="--c:var(${ALTCOL[x.status]||"--st-idea"})">${esc(x.status||"To do")}</span></div>`:""}
   ${rows?`<dl class="kv">${rows}</dl>`:""}
   ${tagsOf(x).length?`<div class="row">${tagsOf(x).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>`:""}
   ${extra}
@@ -627,7 +726,7 @@ function setRowHTML(st,i){const ms=S.machines;
   <div class="fgrid">${SET_FIELDS.map(([k,l,p])=>`<div class="f" style="${k==="notes"||k==="usedFor"?"grid-column:1/-1":""}"><label>${l}</label><input data-s="${k}" value="${esc(st[k]||"")}" placeholder="${esc(p)}"></div>`).join("")}</div></div>`}
 
 function editForm(col,id,preset){const x=id?byId(col,id):null;const base=x?JSON.parse(JSON.stringify(x)):Object.assign({},preset||{});
-  if(col==="makes"&&!base.settings)base.settings=[];
+  if(SCHEMA[col].some(f=>f.t==="settings")&&!base.settings)base.settings=[];
   S.form={col,id:x?x.id:null,data:base,photos:[...(base.photos||[])],removed:[],settings:base.settings||[],notions:base.notions||[],costs:base.costs||(base.cost?[{item:"Total",amount:base.cost}]:[]),autoImgs:[],rating:base.rating||0,uploading:0,confirmDel:false};
   openSheet(`<div class="bar"><h2>${x?"Edit "+esc(title(col,x)):"New "+SINGULAR[col]}</h2><div class="row"><button class="btn small" data-act="close">Cancel</button><button class="btn primary small" data-act="save">Save</button></div></div>
   <form id="ef" class="fgrid" onsubmit="return false">${SCHEMA[col].map(f=>fieldHTML(f,base[f.k])).join("")}</form>
@@ -664,8 +763,10 @@ function drawLookup(){const w=$("#lookup");if(!w)return;const ft=$("#f-fabricTyp
 
 function collect(){const f=$("#ef");const o={...S.form.data};
   SCHEMA[S.form.col].forEach(s=>{if(!s.k||["photos","settings","_lookup","_auto","notions","costs","rating"].includes(s.k))return;const el=f.elements[s.k];if(el)o[s.k]=el.value.trim()});
-  if(S.form.col==="makes"){readSet();o.settings=S.form.settings.filter(s=>Object.keys(s).length);
-    o.notions=(readRows("#notrows","data-n")||[]).filter(r=>r.notionId);o.costs=(readRows("#costrows","data-c")||[]).filter(r=>r.item||r.amount);delete o.cost}
+  const sch=SCHEMA[S.form.col];
+  if(sch.some(f=>f.t==="settings")){readSet();o.settings=S.form.settings.filter(s=>Object.keys(s).length)}
+  if(sch.some(f=>f.t==="notions"))o.notions=(readRows("#notrows","data-n")||[]).filter(r=>r.notionId);
+  if(sch.some(f=>f.t==="costs")){o.costs=(readRows("#costrows","data-c")||[]).filter(r=>r.item||r.amount);delete o.cost}
   if(SCHEMA[S.form.col].some(s=>s.t==="rating"))o.rating=S.form.rating||0;
   o.photos=S.form.photos;for(const k in o)if(o[k]===""||o[k]===undefined)delete o[k];return o}
 
@@ -711,7 +812,7 @@ async function bulkGo(){if(!S.db)return toast("Can't save: not signed in");const
 
 async function saveSettingsDoc(key,val){if(!S.db)return toast("Can't save: not signed in");try{await S.db.collection("settings").doc(key).set(val);return true}catch(e){toast("Couldn't save");return false}}
 async function exportAll(){const data={app:"sewing-book",v:2,exported:new Date().toISOString(),docs:{},photos:{}};
-  for(const c of ["makes","inspo","patterns","fabrics","notions","machines"])data.docs[c]=S[c];data.docs.settings=Object.values(S.settings);
+  for(const c of ["makes","alterations","tips","fitting","inspo","patterns","fabrics","notions","machines"])data.docs[c]=S[c];data.docs.settings=Object.values(S.settings);
   toast("Packing backup…");
   for(const [id] of LOCALURL){try{const b=await IDB.get("blobs",id);if(b)data.photos[id]=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)})}catch(_){}}
   const name="sewing-book-backup-"+new Date().toISOString().slice(0,10)+".json";
@@ -726,10 +827,14 @@ async function restoreBackup(file){let j;try{j=JSON.parse(await file.text())}cat
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;
   if(b.tagName==="A"&&a==="open")e.preventDefault();
   if(a==="quickadd")return openSheet(`<div class="bar"><h2>Add</h2><button class="btn small" data-act="close">Close</button></div><div class="list">
-    ${[["inspo","Inspo, tip or screenshot"],["makes","A make"],["patterns","A pattern"],["fabrics","Fabric to the stash"],["notions","A notion (zip, elastic, interfacing…)"],["machines","A machine"]].map(([c,l])=>`<button class="li" data-act="new" data-col="${c}"><span class="tx"><div class="t">${l}</div></span></button>`).join("")}
+    ${[["inspo","Inspo or screenshot"],["tips","A sewing tip"],["fitting","A fitting note"],["makes","A make"],["alterations","An alteration"],["patterns","A pattern"],["fabrics","Fabric to the stash"],["notions","A notion (zip, elastic, interfacing…)"],["machines","A machine"]].map(([c,l])=>`<button class="li" data-act="new" data-col="${c}"><span class="tx"><div class="t">${l}</div></span></button>`).join("")}
     <button class="li" data-act="bulk"><span class="tx"><div class="t">Paste a list of patterns</div><div class="s">From Threadloop or anywhere else</div></span></button></div>`);
   if(a==="close")return closeSheet();
-  if(a==="new")return editForm(b.dataset.col,null,b.dataset.col==="makes"?{status:"Planned"}:b.dataset.col==="patterns"?{status:"Owned"}:b.dataset.col==="inspo"?{kind:"Inspiration"}:{});
+  if(a==="new"){const c=b.dataset.col;const pre=c==="makes"?{status:"Planned"}:c==="alterations"?{status:"To do"}:c==="patterns"?{status:"Owned"}:c==="inspo"?{kind:"Inspiration"}:c==="fitting"?{garmentGroup:S.filters.fitG||"All garments"}:{};if(b.dataset.k&&b.dataset.v)pre[b.dataset.k]=b.dataset.v;return editForm(c,null,pre)}
+  if(a==="mseg"){S.filters.mseg=b.dataset.v;return render()}
+  if(a==="tseg"){S.filters.tseg=b.dataset.v;return render()}
+  if(a==="grp"){S.filters[b.dataset.col+"Grp"]=b.dataset.v;window.scrollTo(0,0);return render()}
+  if(a==="fitg"){S.filters.fitG=b.dataset.v;return render()}
   if(a==="open")return detail(b.dataset.col,b.dataset.id);
   if(a==="edit")return editForm(b.dataset.col,b.dataset.id);
   if(a==="save")return save();
@@ -757,7 +862,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]
   if(a==="toshop"){const n=byId("notions",b.dataset.id);const s=S.settings.shopping||{items:[]};if(n&&await saveSettingsDoc("shopping",{items:[...s.items,{id:uid(),text:[n.name,n.size,n.colour].filter(Boolean).join(", "),done:false}]}))toast("Added to shopping list");return}
   if(a==="addset"){readSet();S.form.settings.push({});drawSet();return}
   if(a==="delset"){readSet();S.form.settings.splice(+b.dataset.i,1);drawSet();return}
-  if(a==="copyset"){const m=byId("makes",b.dataset.id);if(!m)return;readSet();S.form.settings=[...S.form.settings.filter(s=>Object.keys(s).length),...JSON.parse(JSON.stringify(m.settings||[]))];drawSet();toast("Settings copied in. Adjust as needed.");$("#setrows").scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(a==="copyset"){const m=byId("makes",b.dataset.id)||byId("alterations",b.dataset.id);if(!m)return;readSet();S.form.settings=[...S.form.settings.filter(s=>Object.keys(s).length),...JSON.parse(JSON.stringify(m.settings||[]))];drawSet();toast("Settings copied in. Adjust as needed.");$("#setrows").scrollIntoView({behavior:"smooth",block:"start"});return}
   if(a==="rmphoto"){const [p]=S.form.photos.splice(+b.dataset.i,1);if(p)S.form.removed.push(p.id);drawThumbs();return}
   if(a==="makefrom"){const x=byId("inspo",b.dataset.id);return editForm("makes",null,{title:x.title,status:"Idea",garment:x.garment,fabricType:x.fabricType,patternId:x.patternId,construction:x.notes?("From inspo: "+x.notes):"",tags:x.tags})}
   if(a==="makefrompat"){const x=byId("patterns",b.dataset.id);return editForm("makes",null,{title:x.name,status:"Planned",garment:x.garment,patternId:x.id,size:x.mySize,fit:x.adjustments})}
@@ -828,12 +933,13 @@ route();
   for(const [id,b] of await IDB.entries("blobs"))LOCALURL.set(id,URL.createObjectURL(b));
   const seen=new Set((await IDB.get("docs","_meta/seeded"))||[]);
   for(const [k,d] of await IDB.entries("docs")){if(k.startsWith("_meta/"))continue;const i=k.indexOf("/");const c=k.slice(0,i),id=k.slice(i+1);(db.local[c]=db.local[c]||{})[id]=d}
+  {const mid="mvxovqilpsnemr",m=(db.local.makes||{})[mid];if(m&&!(db.local.alterations||{})[mid]){const st={Idea:"To do",Planned:"Planned",Cutting:"In progress",Sewing:"In progress",Finished:"Done",Abandoned:"Gave up"}[m.status]||"To do";const a={...m,status:st};await IDB.put("docs",a,"alterations/"+mid);(db.local.alterations=db.local.alterations||{})[mid]=a;await IDB.del("docs","makes/"+mid);delete db.local.makes[mid];seen.add("alterations/"+mid);await IDB.put("docs",[...seen],"_meta/seeded")}}
   try{const seed=await (await fetch("data/seed.json",{cache:"no-cache"})).json();let added=false;
     for(const [c,list] of Object.entries(seed))for(const d of list){const key=c+"/"+d.id;if(seen.has(key))continue;seen.add(key);added=true;if(!(db.local[c]||{})[d.id]){const {id,...rest}=d;await IDB.put("docs",rest,key);(db.local[c]=db.local[c]||{})[id]=rest}}
     if(added)await IDB.put("docs",[...seen],"_meta/seeded")}catch(_){}
   try{const tl=await (await fetch("data/threadloop.json",{cache:"no-cache"})).json();db.base.threadloop={};tl.docs.forEach(({id,...d})=>db.base.threadloop[id]=d)}catch(_){S.tlFail=true}
   let rT;const soon=()=>{clearTimeout(rT);rT=setTimeout(()=>{if(!S.form)render()},40)};
-  ["makes","inspo","patterns","fabrics","notions","machines","settings","threadloop"].forEach(c=>db.collection(c).onSnapshot(snap=>{
+  ["makes","alterations","tips","fitting","inspo","patterns","fabrics","notions","machines","settings","threadloop"].forEach(c=>db.collection(c).onSnapshot(snap=>{
     const docs=snap.docs.map(d=>({id:d.id,...d.data()}));
     if(c==="settings"){S.settings={};docs.forEach(d=>S.settings[d.id]=d)}else if(c==="threadloop")setTL(docs);else{S[c]=docs;if(c==="patterns")refreshPatDL()}
     S.ready=true;soon()}));
