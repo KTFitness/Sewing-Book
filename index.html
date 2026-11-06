@@ -576,6 +576,7 @@ function listView(col){const c=LISTCONF[col];const chip=S.filters[col+"Chip"]||c
 function more(){const meas=S.settings.measurements||{};const shop=(S.settings.shopping||{}).items||[];
   return `<div class="stack" style="gap:22px">
   ${statsHTML()}
+  <section class="panel stack"><div class="row between"><h2>Fabric preview</h2><button class="btn primary small" data-act="tryon">Open</button></div><div class="muted" style="font-size:13px">See a fabric from your stash, or a new photo, on a garment shape before you cut.</div></section>
   <section class="stack"><div class="row between"><h2>Machines</h2><button class="btn primary small" data-act="new" data-col="machines">+ Machine</button></div>
   ${S.machines.length?`<div class="list">${S.machines.map(m=>li("machines",m)).join("")}</div>`:`<div class="empty">No machines yet.</div>`}</section>
   <section class="panel stack"><div class="row between"><h2>Shopping list</h2></div>
@@ -645,6 +646,7 @@ function detail(col,id){const x=byId(col,id);if(!x)return;const sch=SCHEMA[col];
     if(ins.length)extra+=`<div class="stack"><h3>Linked inspo</h3><div class="grid-cards">${ins.map(m=>card("inspo",m)).join("")}</div></div>`;
     const sug=String(x.suggested||"").split(",").map(norm).filter(Boolean);
     if(sug.length){const fab=S.fabrics.filter(f=>f.archived!=="Yes"&&sug.includes(norm(f.fabricType)));extra+=`<div class="stack"><h3>Fabric in your stash that suits it</h3>${fab.length?`<div class="list">${fab.map(f=>li("fabrics",f)).join("")}</div>`:`<div class="muted">None of the suggested fabric types are in your stash.</div>`}</div>`}}
+  if(col==="fabrics"&&firstPhoto(x)&&!firstPhoto(x).v)extra+=`<div><button class="btn" data-act="tryon" data-id="${x.id}">See it on a garment</button></div>`;
   if(col==="fabrics"){const ft=norm(x.fabricType);
     const pats=ft?S.patterns.filter(p=>String(p.suggested||"").split(",").map(norm).includes(ft)):[];
     const ms=S.makes.filter(m=>m.fabricId===x.id);
@@ -808,6 +810,55 @@ async function upload(files){if(!S.assets){toast("Uploads need edit access in th
    catch(e){toast(e.code==="too_large"?"That file is over 20 MB":e.code==="unsupported_type"?"That file type can't be stored":e.code==="quota_or_state"?"Photo storage is full":"Upload failed")}
    finally{S.form.uploading--}}msg.textContent=""}
 
+
+/* ---------- Fabric preview ---------- */
+const GSHAPES={
+ "A-line dress, puff sleeves":{cm:92,y:[18,284],body:"M82,22 Q100,36 118,22 L140,30 Q143,60 136,96 L162,280 Q100,286 38,280 L64,96 Q57,60 60,30 Z",parts:["M60,30 Q36,30 30,56 Q30,72 42,76 L59,70 Q61,48 60,30 Z","M140,30 Q164,30 170,56 Q170,72 158,76 L141,70 Q139,48 140,30 Z"],lines:["M64,96 L136,96","M42,76 L59,70","M158,76 L141,70"]},
+ "Shift dress, short sleeves":{cm:95,y:[18,284],body:"M84,22 Q100,34 116,22 L142,30 L144,64 L150,280 L50,280 L56,64 L58,30 Z",parts:["M58,30 L36,42 L44,72 L57,64 Z","M142,30 L164,42 L156,72 L143,64 Z"],lines:[]},
+ "Maxi slip dress":{cm:130,y:[8,292],body:"M78,34 Q100,42 122,34 Q130,72 127,104 L154,290 L46,290 L73,104 Q70,72 78,34 Z",parts:[],lines:["M80,34 L86,8","M120,34 L114,8"]},
+ "T-shirt":{cm:62,y:[60,240],body:"M84,62 Q100,74 116,62 L144,70 L146,108 L144,240 L56,240 L54,108 L56,70 Z",parts:["M56,70 L30,100 L44,116 L55,104 Z","M144,70 L170,100 L156,116 L145,104 Z"],lines:["M84,62 Q100,78 116,62"]},
+ "Long-sleeve top":{cm:62,y:[60,240],body:"M84,62 Q100,74 116,62 L144,70 L146,108 L144,240 L56,240 L54,108 L56,70 Z",parts:["M56,70 L34,104 L22,214 L36,218 L56,118 Z","M144,70 L166,104 L178,214 L164,218 L144,118 Z"],lines:[]},
+ "A-line skirt":{cm:60,y:[50,262],body:"M70,58 L130,58 L158,262 L42,262 Z",parts:["M70,50 L130,50 L130,58 L70,58 Z"],lines:[]},
+ "Pencil skirt":{cm:60,y:[50,262],body:"M68,58 L132,58 Q141,100 137,128 L130,262 L70,262 L63,128 Q59,100 68,58 Z",parts:["M68,50 L132,50 L132,58 L68,58 Z"],lines:["M100,262 L100,236"]},
+ "Wide-leg trousers":{cm:105,y:[22,284],body:"M66,30 L134,30 L154,284 L106,284 L100,116 L94,284 L46,284 Z",parts:["M66,22 L134,22 L134,30 L66,30 Z"],lines:[]},
+ "Tapered trousers":{cm:100,y:[22,284],body:"M66,30 L134,30 Q143,110 126,284 L106,284 L100,116 L94,284 L74,284 Q57,110 66,30 Z",parts:["M66,22 L134,22 L134,30 L66,30 Z"],lines:[]},
+ "Jumpsuit, wide leg":{cm:140,y:[18,288],body:"M84,20 Q100,32 116,20 L132,24 Q128,52 136,72 L134,124 L152,288 L106,288 L100,168 L94,288 L48,288 L66,124 L64,72 Q72,52 68,24 Z",parts:[],lines:["M66,124 L134,124"]}};
+S.tryS={g:"A-line dress, puff sleeves",cm:30,rot:0,src:"",ratio:1,name:""};
+function tryFabrics(){return S.fabrics.filter(f=>f.archived!=="Yes"&&firstPhoto(f)&&!firstPhoto(f).v)}
+function tryonSheet(fabId){const fs=tryFabrics();const t=S.tryS;
+  if(fabId){const f=byId("fabrics",fabId);if(f&&firstPhoto(f)){t.src=blob(firstPhoto(f).id);t.name=f.name||"Fabric";t.fab=f.id}}
+  else if(!t.src&&fs.length){t.src=blob(firstPhoto(fs[0]).id);t.name=fs[0].name||"Fabric";t.fab=fs[0].id}
+  const sel=`style="border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--surface);width:100%"`;
+  openSheet(`<div class="bar"><h2>Fabric preview</h2><button class="btn small" data-act="close">Close</button></div>
+  <div class="stack">
+   <div class="muted" style="font-size:13px">A flat preview of a fabric on a garment shape, for colour and print scale. It doesn't show drape.</div>
+   <label class="stack" style="gap:4px"><span class="eyebrow">Fabric</span><select id="tyFab" ${sel}>${fs.map(f=>`<option value="${f.id}" ${t.fab===f.id?"selected":""}>${esc(f.name||"Fabric")}</option>`).join("")}<option value="" ${!t.fab?"selected":""}>${fs.length?"Another photo…":"Choose a photo…"}</option></select></label>
+   <label class="btn" id="tyPick" style="color:var(--ink);${t.fab&&fs.length?"display:none":""}">Choose or take a fabric photo<input type="file" accept="image/*" hidden data-tryfile></label>
+   <label class="stack" style="gap:4px"><span class="eyebrow">Garment</span><select id="tyG" ${sel}>${Object.keys(GSHAPES).map(k=>`<option ${k===t.g?"selected":""}>${k}</option>`).join("")}</select></label>
+   <label class="stack" style="gap:4px"><span class="eyebrow">Print size: the photo shows about <b id="tyCmV">${t.cm}</b> cm across</span><input id="tyCm" type="range" min="4" max="150" step="1" value="${t.cm}"></label>
+   <label class="stack" style="gap:4px"><span class="eyebrow">Print direction</span><select id="tyRot" ${sel}>${[[0,"As photographed"],[90,"Turned 90°"],[45,"On the bias (45°)"]].map(([v,l])=>`<option value="${v}" ${+t.rot===v?"selected":""}>${l}</option>`).join("")}</select></label>
+   <div id="tyBox" style="background:var(--sunk);border-radius:12px;padding:8px"></div>
+   <div class="row"><button class="btn primary" data-act="trysave">Save to inspo</button></div>
+  </div>`);drawTry()}
+function trySVG(src){const t=S.tryS,g=GSHAPES[t.g];const upc=(g.y[1]-g.y[0])/g.cm;const w=Math.max(2,t.cm*upc),h=w*(t.ratio||1);
+  const fill=src?"url(#fab)":"var(--line)";
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 300" width="100%" style="display:block;max-height:62vh"><defs>${src?`<pattern id="fab" patternUnits="userSpaceOnUse" width="${w.toFixed(2)}" height="${h.toFixed(2)}" patternTransform="rotate(${+t.rot||0} 100 150)"><image href="${src}" xlink:href="${src}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" preserveAspectRatio="none"/></pattern>`:""}</defs>
+   ${g.parts.map(d=>`<path d="${d}" fill="${fill}" stroke="#2b2b2b" stroke-width="1.1" stroke-linejoin="round"/>`).join("")}
+   <path d="${g.body}" fill="${fill}" stroke="#2b2b2b" stroke-width="1.2" stroke-linejoin="round"/>
+   ${g.lines.map(d=>`<path d="${d}" fill="none" stroke="#2b2b2b" stroke-width="1"/>`).join("")}</svg>`}
+function drawTry(){const box=$("#tyBox");if(!box)return;const t=S.tryS;
+  if(!t.src){box.innerHTML=trySVG("")+`<div class="muted" style="text-align:center;font-size:13px;padding:6px">Choose a fabric photo to see it on the garment.</div>`;return}
+  const im=new Image();im.onload=()=>{t.ratio=im.naturalHeight/im.naturalWidth||1;if($("#tyBox"))$("#tyBox").innerHTML=trySVG(t.src)};im.src=t.src;box.innerHTML=trySVG(t.src)}
+async function toDataURL(u){const b=await (await fetch(u)).blob();return await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b)})}
+async function trySave(){const t=S.tryS;if(!t.src)return toast("Choose a fabric photo first");if(!S.db||!S.assets)return toast("Can't save here");
+  try{toast("Saving…");const du=await toDataURL(t.src);const svg=trySVG(du).replace('width="100%" style="display:block;max-height:62vh"','width="800" height="1200"');
+    const img=new Image();await new Promise((r,j)=>{img.onload=r;img.onerror=j;img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg)});
+    const c=document.createElement("canvas");c.width=800;c.height=1200;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,800,1200);x.drawImage(img,0,0,800,1200);
+    const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.88));const up=await S.assets.upload(b,{type:"image/jpeg"});
+    const now=Date.now(),id=uid();const g=t.g.split(",")[0];
+    await S.db.collection("inspo").doc(id).set({kind:"Make idea",title:`${t.name||"Fabric"}: ${g.toLowerCase()} preview`,photos:[{id:up.id}],notes:`Fabric preview: ${t.g}, print shown at about ${t.cm} cm across${+t.rot?`, turned ${t.rot}°`:""}.`,tags:"fabric preview",createdAt:now,updatedAt:now});
+    closeSheet();toast("Saved to inspo");detail("inspo",id)}catch(e){toast("Couldn't save the preview")}}
+
 function bulkSheet(){openSheet(`<div class="bar"><h2>Paste a pattern list</h2><button class="btn small" data-act="close">Close</button></div>
   <div class="stack"><p class="muted" style="margin:0">One pattern per line. Use <b>Designer: Pattern name</b>, just the name, or paste Threadloop pattern links. You can fill in the details later.</p>
   <form onsubmit="return false"><textarea id="bulkIn" style="width:100%;min-height:220px;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--surface)" placeholder="Closet Core: Pietra Pants&#10;Helen's Closet: Blanca Flight Suit&#10;https://threadloop.app/patterns/…"></textarea></form>
@@ -880,6 +931,8 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]
   if(a==="makefrompat"){const x=byId("patterns",b.dataset.id);return editForm("makes",null,{title:x.name,status:"Planned",garment:x.garment,patternId:x.id,size:x.mySize,fit:x.adjustments})}
   if(a==="dupe"){const x=byId("makes",b.dataset.id);const c=JSON.parse(JSON.stringify(x));["id","photos","rating","again","started","finished","cost","createdAt","updatedAt","fabricId"].forEach(k=>delete c[k]);c.status="Planned";c.title=x.title+" (again)";c.fit=[x.fit,x.nextTime&&("Last time noted: "+x.nextTime)].filter(Boolean).join("\n\n");return editForm("makes",null,c)}
   if(a==="bulk")return bulkSheet();
+  if(a==="tryon")return tryonSheet(b.dataset.id);
+  if(a==="trysave")return trySave();
   if(a==="bulkgo")return bulkGo();
   if(a==="export")return exportAll();
   if(a==="shopdel"){const s=S.settings.shopping||{items:[]};return saveSettingsDoc("shopping",{items:s.items.filter(i=>i.id!==b.dataset.id)})}
@@ -887,6 +940,9 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]
 });
 document.addEventListener("change",e=>{const t=e.target;
   if(t.matches("[data-upload]")){upload([...t.files]);t.value="";return}
+  if(t.matches("[data-tryfile]")){const f=t.files[0];t.value="";if(f){S.tryS.src=URL.createObjectURL(f);S.tryS.name="Fabric";S.tryS.fab="";drawTry()}return}
+  if(t.id==="tyFab"){const f=byId("fabrics",t.value);if(f){S.tryS.src=blob(firstPhoto(f).id);S.tryS.name=f.name||"Fabric";S.tryS.fab=f.id;$("#tyPick").style.display="none"}else{S.tryS.fab="";$("#tyPick").style.display=""}drawTry();return}
+  if(t.id==="tyG"||t.id==="tyRot"){S.tryS.g=$("#tyG").value;S.tryS.rot=+$("#tyRot").value;drawTry();return}
   if(t.matches("[data-restore]")){const f=t.files[0];t.value="";if(f)restoreBackup(f);return}
   if(t.matches("[data-tlfile]")){const f=t.files[0];t.value="";if(f)importTL(f);return}
   if(t.matches("[data-autoimg]")){S.form.autoImgs=[...t.files].slice(0,S.sampleImg?.maxCount||5);$("#autoImgs").textContent=S.form.autoImgs.length+" screenshot"+(S.form.autoImgs.length===1?"":"s")+" ready";t.value="";return}
@@ -898,6 +954,7 @@ let qT;document.addEventListener("input",e=>{const t=e.target;
   if(t.dataset.q){S.filters[t.dataset.q+"Q"]=t.value;clearTimeout(qT);qT=setTimeout(()=>{const pos=t.selectionStart;render();const n=$("#q-"+t.dataset.q);if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}},250)}
   if(t.id==="lkF"||t.id==="lkG"){S.filters.lkF=$("#lkF").value;S.filters.lkG=$("#lkG").value;const r=$("#lkRes");const f=S.filters.lkF,g=S.filters.lkG;r.innerHTML=f||g?pastBlock(pastFor(f,g),{max:6,emptyMsg:`No makes logged yet with ${esc(f||g)}. Once you log one, its settings will show here.`}):""}
   if(t.matches("[data-c]"))updTot();
+  if(t.id==="tyCm"){S.tryS.cm=+t.value;$("#tyCmV").textContent=t.value;const b=$("#tyBox");if(b&&S.tryS.src)b.innerHTML=trySVG(S.tryS.src)}
   if(t.id==="f-fabricType"){clearTimeout(drawLookup.t);drawLookup.t=setTimeout(drawLookup,300)}
 });
 document.addEventListener("submit",async e=>{const f=e.target;
